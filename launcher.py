@@ -71,9 +71,9 @@ def update_app_data(gui_dir, progress_label):
 
 # Create a Tkinter window to display the update progress
 def show_update_progress():
-    progress_window = tk.Toplevel()
+    progress_window = customtkinter.Toplevel()
     progress_window.title("Updating...")
-    progress_label = tk.Label(progress_window, text="Updating the application data...")
+    progress_label = customtkinter.CTkLabel(progress_window, text="Updating the application data...")
     progress_label.pack()
 
     # Get the app data directory
@@ -103,12 +103,12 @@ def show_update_progress():
     import GUI
 
 # Create the main Tkinter window
-root = tk.Tk()
+root = customtkinter.CTk()
 root.title("Launcher")
+root.geometry(500 x 400)
 
-# Add a button to initiate the update
-update_button = tk.Button(root, text="Check for Updates", command=show_update_progress)
-update_button.pack(pady=20)
+# Automatically start the process
+show_update_progress()
 
 # Run the Tkinter main loop
 root.mainloop()
