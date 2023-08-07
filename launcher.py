@@ -48,7 +48,7 @@ def check_and_update_version(gui_dir):
             return True
     return False
 
-def update_app_data(gui_dir):
+def update_app_data(gui_dir, progress_label):
     if os.path.exists(gui_dir):
         shutil.rmtree(gui_dir)
 
@@ -69,21 +69,46 @@ def update_app_data(gui_dir):
     # Remove the downloaded zip file
     os.remove(zip_file_path)
 
-# Get the app data directory
-aar_dir, gui_dir = get_app_data_directory()
+# Create a Tkinter window to display the update progress
+def show_update_progress():
+    progress_window = tk.Toplevel()
+    progress_window.title("Updating...")
+    progress_label = tk.Label(progress_window, text="Updating the application data...")
+    progress_label.pack()
 
-# Check if the directory exists
-if not os.path.exists(aar_dir):
-    print(f"Directory '{aar_dir}' does not exist. Creating the directory...")
-    os.makedirs(aar_dir)
+    # Get the app data directory
+    aar_dir, gui_dir = get_app_data_directory()
 
-# Check if an update is required
-if check_and_update_version(gui_dir):
-    print("Updating the application data...")
-    update_app_data(gui_dir)
+    # Check if the directory exists
+    if not os.path.exists(aar_dir):
+        print(f"Directory '{aar_dir}' does not exist. Creating the directory...")
+        os.makedirs(aar_dir)
 
-# Add the directory to sys.path
-sys.path.append(gui_dir)
+    # Check if an update is required
+    if check_and_update_version(gui_dir):
+        update_app_data(gui_dir, progress_label)
+        progress_label.config(text="Update completed!")
+        # Destroy the progress window after a few seconds
+        progress_window.after(3000, progress_window.destroy)
 
-# Now, you can import GUI
-import GUI
+    else:
+        progress_label.config(text="No update needed.")
+        # Destroy the progress window after a few seconds
+        progress_window.after(3000, progress_window.destroy)
+
+    # Add the directory to sys.path
+    sys.path.append(gui_dir)
+
+    # Now, you can import GUI
+    import GUI
+
+# Create the main Tkinter window
+root = tk.Tk()
+root.title("Launcher")
+
+# Add a button to initiate the update
+update_button = tk.Button(root, text="Check for Updates", command=show_update_progress)
+update_button.pack(pady=20)
+
+# Run the Tkinter main loop
+root.mainloop()
