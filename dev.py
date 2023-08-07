@@ -48,7 +48,7 @@ def check_and_update_version(gui_dir):
             print("New version available!")
             return True
         else:
-            return False
+            return True
     else:
         return True
 
