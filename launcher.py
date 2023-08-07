@@ -46,9 +46,12 @@ def check_and_update_version(gui_dir):
                 break
         if remote_version and current_version < remote_version:
             return True
-    return False
+        else:
+            return False
+    else:
+        return True
 
-def update_app_data(gui_dir, progress_label):
+def update_app_data(gui_dir, progress_label, aar_dir):
     if os.path.exists(gui_dir):
         shutil.rmtree(gui_dir)
 
@@ -71,10 +74,7 @@ def update_app_data(gui_dir, progress_label):
 
 # Create a Tkinter window to display the update progress
 def show_update_progress():
-    progress_window = customtkinter.CTkToplevel()
-    progress_window.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
-    progress_window.title("Updating...")
-    progress_label = customtkinter.CTkLabel(progress_window, text="Updating the application data...")
+    progress_label = customtkinter.CTkLabel(root, text="Updating the application data...")
     progress_label.pack()
 
     # Get the app data directory
@@ -87,15 +87,12 @@ def show_update_progress():
 
     # Check if an update is required
     if check_and_update_version(gui_dir):
-        update_app_data(gui_dir, progress_label)
+        update_app_data(gui_dir, progress_label, aar_dir)
         progress_label.configure(text="Update completed!")
-        # Destroy the progress window after a few seconds
-        progress_window.after(3000, progress_window.destroy)
 
     else:
         progress_label.configure(text="No update needed.")
-        # Destroy the progress window after a few seconds
-        progress_window.after(3000, progress_window.destroy)
+
 
     # Add the directory to sys.path
     sys.path.append(gui_dir)
@@ -123,7 +120,7 @@ y_position = (screen_height - window_height) // 2
 root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
 # Automatically start the process
-root.withdraw()
+
 show_update_progress()
 
 
