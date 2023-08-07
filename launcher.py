@@ -87,12 +87,12 @@ def show_update_progress():
     # Check if an update is required
     if check_and_update_version(gui_dir):
         update_app_data(gui_dir, progress_label)
-        progress_label.config(text="Update completed!")
+        progress_label.configure(text="Update completed!")
         # Destroy the progress window after a few seconds
         progress_window.after(3000, progress_window.destroy)
 
     else:
-        progress_label.config(text="No update needed.")
+        progress_label.configure(text="No update needed.")
         # Destroy the progress window after a few seconds
         progress_window.after(3000, progress_window.destroy)
 
