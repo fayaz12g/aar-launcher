@@ -105,7 +105,21 @@ def show_update_progress():
 # Create the main Tkinter window
 root = customtkinter.CTk()
 root.title("Launcher")
-root.geometry(500 x 400)
+
+# Get the screen's width and height
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# Set the window's width and height
+window_width = 500
+window_height = 300
+
+# Calculate the x and y coordinates for centering the window
+x_position = (screen_width - window_width) // 2
+y_position = (screen_height - window_height) // 2
+
+# Set the geometry of the window to be centered on the screen
+root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
 # Automatically start the process
 show_update_progress()
