@@ -45,13 +45,14 @@ def check_and_update_version(gui_dir):
                 remote_version = line.split('=')[1].strip().strip('"')
                 break
         if remote_version and current_version < remote_version:
+            print("New version available!")
             return True
         else:
             return False
     else:
         return True
 
-def update_app_data(gui_dir, progress_label, aar_dir):
+def update_app_data(gui_dir, aar_dir):
     if os.path.exists(gui_dir):
         shutil.rmtree(gui_dir)
 
@@ -74,8 +75,6 @@ def update_app_data(gui_dir, progress_label, aar_dir):
 
 # Create a Tkinter window to display the update progress
 def show_update_progress():
-    progress_label = customtkinter.CTkLabel(root, text="Updating the application data...")
-    progress_label.pack()
 
     # Get the app data directory
     aar_dir, gui_dir = get_app_data_directory()
@@ -87,12 +86,7 @@ def show_update_progress():
 
     # Check if an update is required
     if check_and_update_version(gui_dir):
-        update_app_data(gui_dir, progress_label, aar_dir)
-        progress_label.configure(text="Update completed!")
-
-    else:
-        progress_label.configure(text="No update needed.")
-
+        update_app_data(gui_dir, aar_dir)
 
     # Add the directory to sys.path
     sys.path.append(gui_dir)
@@ -100,29 +94,5 @@ def show_update_progress():
     # Now, you can import GUI
     import GUI
 
-# Create the main Tkinter window
-root = customtkinter.CTk()
-root.title("Launcher")
-
-# Get the screen's width and height
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
-
-# Set the window's width and height
-window_width = 500
-window_height = 300
-
-# Calculate the x and y coordinates for centering the window
-x_position = (screen_width - window_width) // 2
-y_position = (screen_height - window_height) // 2
-
-# Set the geometry of the window to be centered on the screen
-root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
-
 # Automatically start the process
-
 show_update_progress()
-
-
-# Run the Tkinter main loop
-root.mainloop()
