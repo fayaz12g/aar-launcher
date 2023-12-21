@@ -21,6 +21,11 @@ import requests
 import psutil
 import SarcLib
 import libyaz0
+import subprocess
+import sys
+import os
+
+
 
 
 #######################
@@ -206,29 +211,68 @@ def launch_totk():
     if check_and_update_version_totk(totk_gui_dir):
         update_app_data_totk(totk_gui_dir, aar_dir)
 
-    # Add the directory to sys.path
-    sys.path.append(totk_gui_dir)
+    # Specify the path to the Python script you want to launch
+    totk_gui = os.path.join(totk_gui_dir, 'GUI.py')
 
-    # Now, you can import GUI
-    import GUI
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
+
+    # Build the command to execute the other Python script
+    launch_totk_command = ["python", totk_gui]
+
+    # Use subprocess to launch the script
+    try:
+        root.destroy()
+        subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+
+    root.destroy()
 
 def launch_mk8d():
     if check_and_update_version_mk8d(mk8d_gui_dir):
         update_app_data_mk8d(mk8d_gui_dir, aar_dir)
 
-    sys.path.append(mk8d_gui_dir)
+    # Specify the path to the Python script you want to launch
+    mk8d_gui = os.path.join(mk8d_gui_dir, 'GUI.py')
 
-    # Now, you can import GUI
-    import GUI
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
+
+    # Build the command to execute the other Python script
+    launch_mk8d_command = ["python", mk8d_gui]
+
+    # Use subprocess to launch the script
+    try:
+        root.destroy()
+        subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+    
+    root.destroy()
+
 
 def launch_smo():
     if check_and_update_version_smo(smo_gui_dir):
         update_app_data_smo(smo_gui_dir, aar_dir)
 
-    sys.path.append(smo_gui_dir)
+    # Specify the path to the Python script you want to launch
+    smo_gui = os.path.join(smo_gui_dir, 'GUI.py')
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
 
-    # Now, you can import GUI
-    import GUI
+    # Build the command to execute the other Python script
+    launch_smo_command = ["python", smo_gui]
+
+    # Use subprocess to launch the script
+    try:
+        root.destroy()
+        subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+
+
+
 
 # Automatically start the process
 show_update_progress()
@@ -239,8 +283,10 @@ mario_button.pack(pady = 50)
 totk_button = customtkinter.CTkButton(master=root, text="AAR for Tears of the Kingdom", command=launch_totk)
 totk_button.pack(pady = 50)
 
-mk8d_button = customtkinter.CTkButton(master=root, text="AAR for Mariokart 8 Deluxe", command=launch_mk8d)
+mk8d_button = customtkinter.CTkButton(master=root, text="AAR for MarioKart 8 Deluxe", command=launch_mk8d)
 mk8d_button.pack(pady = 50)
 
+text_box = customtkinter.CTkLabel(master=root, text=f"If there is an update, or you have not downloaded the program before, \nit may take up to a minute and say not responding when launching. \nPlease just wait. Also, ensure you have Python installed." )
+text_box.pack(pady=100)
 
 root.mainloop()
