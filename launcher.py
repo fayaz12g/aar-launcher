@@ -287,6 +287,6 @@ mk8d_button = customtkinter.CTkButton(master=root, text="AAR for MarioKart 8 Del
 mk8d_button.pack(pady = 50)
 
 text_box = customtkinter.CTkLabel(master=root, text=f"If there is an update, or you have not downloaded the program before, \nit may take up to a minute and say not responding when launching. \nPlease just wait. Also, ensure you have Python installed." )
-text_box.pack(pady=100)
+text_box.pack(pady=50)
 
 root.mainloop()
