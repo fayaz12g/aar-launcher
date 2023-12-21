@@ -24,13 +24,15 @@ import libyaz0
 
 def get_app_data_directory():
     username = getpass.getuser()
-    aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\totk-aar'
-    gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\totk-aar\\totk-aar-main'
-    return aar_dir, gui_dir
+    aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
+    totk_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\totk-aar-main'
+    smo_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\smo-aar-main'
+    mk8d_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mk8d-aar-main'
+    return aar_dir, totk_gui_dir, smo_gui_dir, mk8d_gui_dir
 
-def check_and_update_version(gui_dir):
-    gui_path = os.path.join(gui_dir, 'GUI.py')
-    if os.path.exists(gui_path):
+def check_and_update_version(totk_gui_dir):
+    gui_path = os.path.join(totk_gui_dir, 'GUI.py')
+    if os.path.exists(totk_gui_dir):
         with open(gui_path, 'r') as file:
             for line in file:
                 if line.startswith("tool_version"):
@@ -51,10 +53,16 @@ def check_and_update_version(gui_dir):
             return False
     else:
         return True
+    
+#TOTK Stuff
+    
+#MK8D Stuff
+    
+#SMO Stuff
 
-def update_app_data(gui_dir, aar_dir):
-    if os.path.exists(gui_dir):
-        shutil.rmtree(gui_dir)
+def update_app_data(totk_gui_dir, aar_dir):
+    if os.path.exists(totk_gui_dir):
+        shutil.rmtree(totk_gui_dir)
 
     # Download the contents of the GitHub repository
     print("Downloading the contents of the GitHub repository...")
@@ -77,7 +85,7 @@ def update_app_data(gui_dir, aar_dir):
 def show_update_progress():
 
     # Get the app data directory
-    aar_dir, gui_dir = get_app_data_directory()
+    aar_dir, totk_gui_dir, smo_gui_dir, mk8d_gui_dir = get_app_data_directory()
 
     # Check if the directory exists
     if not os.path.exists(aar_dir):
@@ -85,11 +93,11 @@ def show_update_progress():
         os.makedirs(aar_dir)
 
     # Check if an update is required
-    if check_and_update_version(gui_dir):
-        update_app_data(gui_dir, aar_dir)
+    if check_and_update_version(totk_gui_dir):
+        update_app_data(totk_gui_dir, aar_dir)
 
     # Add the directory to sys.path
-    sys.path.append(gui_dir)
+    sys.path.append(totk_gui_dir)
 
     # Now, you can import GUI
     import GUI
