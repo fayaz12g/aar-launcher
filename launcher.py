@@ -41,6 +41,61 @@ totk_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\totk-a
 smo_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\smo-aar-main'
 mk8d_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mk8d-aar-main'
 
+dependencies = [
+    "packaging",
+    "requests",
+    "tkinter",
+    "customtkinter",
+    "sarclib",
+    "psutil",
+    "pillow",
+    "keystone-engine",
+    "certifi",
+    "idna",
+    "charset_normalizer",
+    "darkdetect",
+    "libyaz0",
+    "urllib3",
+    "zstandard",
+]
+
+def is_pip_installed():
+    try:
+        subprocess.run(["pip", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+# Function to install pip
+def install_pip():
+    try:
+        subprocess.run(["python", "-m", "ensurepip", "--default-pip"], check=True)
+        print("pip has been successfully installed.")
+    except subprocess.CalledProcessError:
+        print("Failed to install pip. Please install it manually.")
+
+
+# Function to check and install dependencies
+def check_and_install_dependencies():
+    if not is_pip_installed():
+        print("pip is not installed. Attempting to install pip...")
+        install_pip()
+        
+    for dependency in dependencies:
+        try:
+            __import__(dependency)
+            print(f"{dependency} is already installed.")
+        except ImportError:
+            print(f"{dependency} is not installed. Attempting to install...")
+            install_dependency(dependency)
+
+# Function to install a specific dependency using pip
+def install_dependency(dependency):
+    try:
+        subprocess.run(["pip", "install", dependency], check=True)
+        print(f"{dependency} has been successfully installed.")
+    except subprocess.CalledProcessError:
+        print(f"Failed to install {dependency}. Please install it manually.")
 
 # Create a Tkinter window to display the update progress
 def show_update_progress():
@@ -67,6 +122,7 @@ windowtitle = customtkinter.CTkLabel(master=root, font=(CTkFont, 20), text="Any 
 #TOTK Stuff
 
 def check_and_update_version_totk(totk_gui_dir):
+    check_and_install_dependencies()
     gui_path = os.path.join(totk_gui_dir, 'GUI.py')
     if os.path.exists(totk_gui_dir):
         with open(gui_path, 'r') as file:
@@ -114,6 +170,7 @@ def update_app_data_totk(totk_gui_dir, aar_dir):
 #MK8D Stuff
     
 def check_and_update_version_mk8d(totk_gui_dir):
+    check_and_install_dependencies()
     gui_path = os.path.join(totk_gui_dir, 'GUI.py')
     if os.path.exists(totk_gui_dir):
         with open(gui_path, 'r') as file:
@@ -161,6 +218,7 @@ def update_app_data_mk8d(totk_gui_dir, aar_dir):
 #SMO Stuff
     
 def check_and_update_version_smo(totk_gui_dir):
+    check_and_install_dependencies()
     gui_path = os.path.join(totk_gui_dir, 'GUI.py')
     if os.path.exists(totk_gui_dir):
         with open(gui_path, 'r') as file:
