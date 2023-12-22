@@ -18,12 +18,10 @@ from pathlib import Path
 import sys
 import shutil
 import requests
-import psutil
-import SarcLib
-import libyaz0
 import subprocess
 import sys
 import os
+import time
 
 
 
@@ -92,7 +90,7 @@ def check_and_install_dependencies():
 # Function to install a specific dependency using pip
 def install_dependency(dependency):
     try:
-        subprocess.run(["pip", "install", dependency], check=True)
+        subprocess.run(["python", "-m", "pip", "install", dependency], check=True)
         print(f"{dependency} has been successfully installed.")
     except subprocess.CalledProcessError:
         print(f"Failed to install {dependency}. Please install it manually.")
@@ -266,6 +264,7 @@ def update_app_data_smo(totk_gui_dir, aar_dir):
 
 def launch_totk():
     # Check if an update is required
+    root.destroy()
     if check_and_update_version_totk(totk_gui_dir):
         update_app_data_totk(totk_gui_dir, aar_dir)
 
@@ -280,14 +279,12 @@ def launch_totk():
 
     # Use subprocess to launch the script
     try:
-        root.destroy()
         subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
 
-    root.destroy()
-
 def launch_mk8d():
+    root.destroy()
     if check_and_update_version_mk8d(mk8d_gui_dir):
         update_app_data_mk8d(mk8d_gui_dir, aar_dir)
 
@@ -302,7 +299,6 @@ def launch_mk8d():
 
     # Use subprocess to launch the script
     try:
-        root.destroy()
         subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
@@ -311,6 +307,7 @@ def launch_mk8d():
 
 
 def launch_smo():
+    root.destroy()
     if check_and_update_version_smo(smo_gui_dir):
         update_app_data_smo(smo_gui_dir, aar_dir)
 
@@ -324,12 +321,16 @@ def launch_smo():
 
     # Use subprocess to launch the script
     try:
-        root.destroy()
         subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
 
 
+def update_text(new_text):
+    text_box.config(state="normal")  # Set state to normal to enable editing
+    text_box.delete(1.0, "end")  # Clear existing text
+    text_box.insert("end", new_text)  # Insert new text
+    text_box.config(state="disabled")  # Set state to disabled to make it read-only
 
 
 # Automatically start the process
@@ -344,7 +345,12 @@ totk_button.pack(pady = 50)
 mk8d_button = customtkinter.CTkButton(master=root, text="AAR for MarioKart 8 Deluxe", command=launch_mk8d)
 mk8d_button.pack(pady = 50)
 
-text_box = customtkinter.CTkLabel(master=root, text=f"If there is an update, or you have not downloaded the program before, \nit may take up to a minute and say not responding when launching. \nPlease just wait. Also, ensure you have Python installed." )
-text_box.pack(pady=50)
+text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
+text_box.pack(pady=20)
+
+default_text = "If there is an update, or you have not downloaded the program before, " \
+               "it may take up to a minute and say not responding when launching. " \
+               "Please just wait. Also, ensure you have Python installed."
+update_text(default_text)
 
 root.mainloop()
