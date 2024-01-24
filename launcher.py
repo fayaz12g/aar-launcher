@@ -120,7 +120,7 @@ windowtitle = customtkinter.CTkLabel(master=root, font=(CTkFont, 20), text="Any 
 #TOTK Stuff
 
 def check_and_update_version_totk(totk_gui_dir):
-    check_and_install_dependencies()
+    # check_and_install_dependencies()
     gui_path = os.path.join(totk_gui_dir, 'GUI.py')
     if os.path.exists(totk_gui_dir):
         with open(gui_path, 'r') as file:
@@ -168,7 +168,7 @@ def update_app_data_totk(totk_gui_dir, aar_dir):
 #MK8D Stuff
     
 def check_and_update_version_mk8d(totk_gui_dir):
-    check_and_install_dependencies()
+    # check_and_install_dependencies()
     gui_path = os.path.join(totk_gui_dir, 'GUI.py')
     if os.path.exists(totk_gui_dir):
         with open(gui_path, 'r') as file:
@@ -216,7 +216,7 @@ def update_app_data_mk8d(totk_gui_dir, aar_dir):
 #SMO Stuff
     
 def check_and_update_version_smo(totk_gui_dir):
-    check_and_install_dependencies()
+    # check_and_install_dependencies()
     gui_path = os.path.join(totk_gui_dir, 'GUI.py')
     if os.path.exists(totk_gui_dir):
         with open(gui_path, 'r') as file:
@@ -278,7 +278,7 @@ def launch_totk():
     launch_totk_command = ["python", totk_gui]
 
     # Launch Using Old Method
-    sys.path.append(totk_gui)
+    sys.path.append(totk_gui_dir)
 
     # Use subprocess to launch the script
     try:
@@ -302,7 +302,7 @@ def launch_mk8d():
     launch_mk8d_command = ["python", mk8d_gui]
    
     # Launch Using Old Method
-    sys.path.append(mk8d_gui)
+    sys.path.append(mk8d_gui_dir)
 
     # Use subprocess to launch the script
     try:
@@ -328,7 +328,7 @@ def launch_smo():
     launch_smo_command = ["python", smo_gui]
    
     # Launch Using Old Method
-    sys.path.append(smo_gui)
+    sys.path.append(smo_gui_dir)
 
     # Use subprocess to launch the script
     try:
