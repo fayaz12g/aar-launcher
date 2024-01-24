@@ -48,9 +48,9 @@ tool_version = "local git version"
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
     
-totk_gui_dir = f'C:\\Users\\{username}\\Documents\\GithHub\\totk-aar'
-smo_gui_dir = f'C:\\Users\\{username}\\Documents\\GithHub\\smo-aar'
-mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GithHub\\mk8d-aar'
+totk_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\totk-aar'
+smo_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\smo-aar'
+mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mk8d-aar'
 
 
 root = customtkinter.CTk()
