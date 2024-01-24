@@ -278,7 +278,6 @@ def update_app_data_smo(totk_gui_dir, aar_dir):
 
 def launch_totk():
     # Check if an update is required
-    root.destroy()
     if check_and_update_version_totk(totk_gui_dir):
         update_app_data_totk(totk_gui_dir, aar_dir)
 
@@ -297,12 +296,12 @@ def launch_totk():
     # Use subprocess to launch the script
     try:
         import GUI
+        root.destroy()
         # subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
 
 def launch_mk8d():
-    root.destroy()
     if check_and_update_version_mk8d(mk8d_gui_dir):
         update_app_data_mk8d(mk8d_gui_dir, aar_dir)
 
@@ -321,15 +320,14 @@ def launch_mk8d():
     # Use subprocess to launch the script
     try:
         import GUI
+        root.destroy()
         # subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
     
-    root.destroy()
 
 
 def launch_smo():
-    root.destroy()
     if check_and_update_version_smo(smo_gui_dir):
         update_app_data_smo(smo_gui_dir, aar_dir)
 
@@ -347,6 +345,7 @@ def launch_smo():
     # Use subprocess to launch the script
     try:
         import GUI
+        root.destroy()
         # subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
