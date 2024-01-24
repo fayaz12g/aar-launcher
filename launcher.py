@@ -296,10 +296,10 @@ def launch_totk():
     # Use subprocess to launch the script
     try:
         import GUI
-        root.destroy()
         # subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
+    root.destroy()
 
 def launch_mk8d():
     if check_and_update_version_mk8d(mk8d_gui_dir):
@@ -320,10 +320,10 @@ def launch_mk8d():
     # Use subprocess to launch the script
     try:
         import GUI
-        root.destroy()
         # subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
+    root.destroy()
     
 
 
@@ -345,10 +345,10 @@ def launch_smo():
     # Use subprocess to launch the script
     try:
         import GUI
-        root.destroy()
         # subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
+    root.destroy()
 
 
 def update_text(new_text):
