@@ -81,32 +81,32 @@ def is_pip_installed():
 def install_pip():
     try:
         subprocess.run(["python", "-m", "ensurepip", "--default-pip"], check=True)
-        print("pip has been successfully installed.")
+        update_text("pip has been successfully installed.")
     except subprocess.CalledProcessError:
-        print("Failed to install pip. Please install it manually.")
+        update_text("Failed to install pip. Please install it manually.")
 
 
 # Function to check and install dependencies
 def check_and_install_dependencies():
     if not is_pip_installed():
-        print("pip is not installed. Attempting to install pip...")
+        update_text("pip is not installed. Attempting to install pip...")
         install_pip()
         
     for dependency in dependencies:
         try:
             __import__(dependency)
-            print(f"{dependency} is already installed.")
+            priupdate_textnt(f"{dependency} is already installed.")
         except ImportError:
-            print(f"{dependency} is not installed. Attempting to install...")
+            update_text(f"{dependency} is not installed. Attempting to install...")
             install_dependency(dependency)
 
 # Function to install a specific dependency using pip
 def install_dependency(dependency):
     try:
         subprocess.run(["python", "-m", "pip", "install", dependency], check=True)
-        print(f"{dependency} has been successfully installed.")
+        update_text(f"{dependency} has been successfully installed.")
     except subprocess.CalledProcessError:
-        print(f"Failed to install {dependency}. Please install it manually.")
+        update_text(f"Failed to install {dependency}. Please install it manually.")
 
 # Create a Tkinter window to display the update progress
 def show_update_progress():
@@ -114,7 +114,7 @@ def show_update_progress():
 
     # Check if the directory exists
     if not os.path.exists(aar_dir):
-        print(f"Directory '{aar_dir}' does not exist. Creating the directory...")
+        update_text(f"Directory '{aar_dir}' does not exist. Creating the directory...")
         os.makedirs(aar_dir)
 
 
@@ -151,6 +151,7 @@ def check_and_update_version_totk(totk_gui_dir):
                 break
         if remote_version and current_version < remote_version:
             print("New version available!")
+            update_text("New version available!")
             return True
         else:
             return False
@@ -162,7 +163,7 @@ def update_app_data_totk(totk_gui_dir, aar_dir):
         shutil.rmtree(totk_gui_dir)
 
     # Download the contents of the GitHub repository
-    print("Downloading the contents of the GitHub repository...")
+    update_text("Downloading the contents of the GitHub repository...")
     url = 'https://github.com/fayaz12g/totk-aar/archive/main.zip'
     response = requests.get(url)
 
@@ -246,7 +247,7 @@ def check_and_update_version_smo(totk_gui_dir):
                 remote_version = line.split('=')[1].strip().strip('"')
                 break
         if remote_version and current_version < remote_version:
-            print("New version available!")
+            update_text("New version available!")
             return True
         else:
             return False
@@ -258,7 +259,7 @@ def update_app_data_smo(totk_gui_dir, aar_dir):
         shutil.rmtree(totk_gui_dir)
 
     # Download the contents of the GitHub repository
-    print("Downloading the contents of the GitHub repository...")
+    update_text("Downloading the contents of the GitHub repository...")
     url = 'https://github.com/fayaz12g/smo-aar/archive/main.zip'
     response = requests.get(url)
 
@@ -298,7 +299,7 @@ def launch_totk():
         import GUI
         # subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
-        print(f"Error: {e}")
+        update_text(f"Error: {e}")
 
 def launch_mk8d():
     root.destroy()
@@ -322,7 +323,7 @@ def launch_mk8d():
         import GUI
         # subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
-        print(f"Error: {e}")
+        update_text(f"Error: {e}")
     
     root.destroy()
 
@@ -348,7 +349,7 @@ def launch_smo():
         import GUI
         # subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
-        print(f"Error: {e}")
+        update_text(f"Error: {e}")
 
 
 def update_text(new_text):
@@ -373,9 +374,7 @@ mk8d_button.pack(pady = 50)
 text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
 text_box.pack(pady=20)
 
-default_text = "If there is an update, or you have not downloaded the program before, " \
-               "it may take up to a minute and say not responding when launching. " \
-               "Please just wait. Also, ensure you have Python installed."
+default_text = "Click the game you want to use the tool for!"
 update_text(default_text)
 
 root.mainloop()
