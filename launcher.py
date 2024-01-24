@@ -26,7 +26,6 @@ import packaging
 import requests
 import tkinter
 import customtkinter
-import sarclib
 import psutil
 import PIL
 import keystone
