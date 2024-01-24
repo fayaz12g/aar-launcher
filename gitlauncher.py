@@ -138,9 +138,6 @@ def update_text(new_text):
     text_box.config(state="disabled")  # Set state to disabled to make it read-only
 
 
-# Automatically start the process
-show_update_progress()
-
 mario_button = customtkinter.CTkButton(master=root, text="AAR for Mario Odyssey", command=launch_smo)
 mario_button.pack(pady = 50)
 
