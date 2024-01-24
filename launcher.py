@@ -95,7 +95,7 @@ def check_and_install_dependencies():
     for dependency in dependencies:
         try:
             __import__(dependency)
-            priupdate_textnt(f"{dependency} is already installed.")
+            update_text(f"{dependency} is already installed.")
         except ImportError:
             update_text(f"{dependency} is not installed. Attempting to install...")
             install_dependency(dependency)
