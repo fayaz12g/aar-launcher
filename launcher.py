@@ -277,9 +277,13 @@ def launch_totk():
     # Build the command to execute the other Python script
     launch_totk_command = ["python", totk_gui]
 
+    # Launch Using Old Method
+    sys.path.append(totk_gui)
+
     # Use subprocess to launch the script
     try:
-        subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        import GUI
+        # subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
 
@@ -296,10 +300,14 @@ def launch_mk8d():
 
     # Build the command to execute the other Python script
     launch_mk8d_command = ["python", mk8d_gui]
+   
+    # Launch Using Old Method
+    sys.path.append(mk8d_gui)
 
     # Use subprocess to launch the script
     try:
-        subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        import GUI
+        # subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
     
@@ -318,10 +326,14 @@ def launch_smo():
 
     # Build the command to execute the other Python script
     launch_smo_command = ["python", smo_gui]
+   
+    # Launch Using Old Method
+    sys.path.append(smo_gui)
 
     # Use subprocess to launch the script
     try:
-        subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        import GUI
+        # subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
 
