@@ -281,6 +281,8 @@ def launch_totk():
     if check_and_update_version_totk(totk_gui_dir):
         update_app_data_totk(totk_gui_dir, aar_dir)
 
+    root.destroy()
+
     # Specify the path to the Python script you want to launch
     totk_gui = os.path.join(totk_gui_dir, 'GUI.py')
 
@@ -299,11 +301,12 @@ def launch_totk():
         # subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
-    root.destroy()
 
 def launch_mk8d():
+
     if check_and_update_version_mk8d(mk8d_gui_dir):
         update_app_data_mk8d(mk8d_gui_dir, aar_dir)
+    root.destroy()
 
     # Specify the path to the Python script you want to launch
     mk8d_gui = os.path.join(mk8d_gui_dir, 'GUI.py')
@@ -323,7 +326,6 @@ def launch_mk8d():
         # subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
-    root.destroy()
     
 
 
@@ -331,6 +333,7 @@ def launch_smo():
     if check_and_update_version_smo(smo_gui_dir):
         update_app_data_smo(smo_gui_dir, aar_dir)
 
+    root.destroy()
     # Specify the path to the Python script you want to launch
     smo_gui = os.path.join(smo_gui_dir, 'GUI.py')
     # Get the path to the current executable (the PyInstaller-built application)
@@ -348,7 +351,6 @@ def launch_smo():
         # subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
-    root.destroy()
 
 
 def update_text(new_text):
