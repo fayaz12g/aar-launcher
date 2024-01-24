@@ -28,7 +28,6 @@ import tkinter
 import customtkinter
 import psutil
 import PIL
-import keystone
 import certifi
 import idna
 import charset_normalizer
