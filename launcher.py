@@ -43,7 +43,7 @@ import zstandard
 #### Create Window ####
 #######################
 
-tool_version = "3.2"
+tool_version = "4.0"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
