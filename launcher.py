@@ -70,6 +70,12 @@ dependencies = [
     "zstandard",
 ]
 
+def update_text(new_text):
+    text_box.config(state="normal")  # Set state to normal to enable editing
+    text_box.delete(1.0, "end")  # Clear existing text
+    text_box.insert("end", new_text)  # Insert new text
+    text_box.config(state="disabled")  # Set state to disabled to make it read-only
+    
 def is_pip_installed():
     try:
         subprocess.run(["pip", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
