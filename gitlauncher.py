@@ -50,12 +50,13 @@ aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
     
 totk_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\totk-aar'
 smo_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\smo-aar'
+sm3dw_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\sm3dw-aar-main'
 mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mk8d-aar'
 
 
 root = customtkinter.CTk()
 root.title(f"Any Aspect Ratio Launcher {tool_version}")
-root.geometry("450x600")
+root.geometry("450x800")
 
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")  
@@ -130,6 +131,25 @@ def launch_smo():
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
 
+def launch_sm3dw():
+    root.destroy()
+    # Specify the path to the Python script you want to launch
+    sm3dw_gui = os.path.join(sm3dw_gui_dir, 'GUI.py')
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
+
+    # Build the command to execute the other Python script
+    launch_sm3dw_command = ["python", sm3dw_gui]
+   
+    # Launch Using Old Method
+    sys.path.append(sm3dw_gui_dir)
+
+    # Use subprocess to launch the script
+    try:
+        import GUI
+        # subprocess.run(launch_sm3dw_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        update_text(f"Error: {e}")
 
 def update_text(new_text):
     text_box.config(state="normal")  # Set state to normal to enable editing
@@ -147,8 +167,12 @@ totk_button.pack(pady = 50)
 mk8d_button = customtkinter.CTkButton(master=root, text="AAR for MarioKart 8 Deluxe", command=launch_mk8d)
 mk8d_button.pack(pady = 50)
 
+sm3dw_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario 3D World + Bowser's Fury", command=launch_sm3dw)
+sm3dw_button.pack(pady = 50)
+
 text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
 text_box.pack(pady=20)
+
 
 default_text = "Click the game you want to use the tool for!"
 update_text(default_text)
