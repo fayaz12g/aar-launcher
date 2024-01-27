@@ -52,7 +52,6 @@ totk_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\totk-a
 smo_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\smo-aar-main'
 sm3dw_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\sm3dw-aar-main'
 mk8d_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mk8d-aar-main'
-mm2_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mm2-aar-main'
 
 dependencies = [
     "packaging",
@@ -188,7 +187,7 @@ def update_app_data_totk(totk_gui_dir, aar_dir):
     os.remove(zip_file_path)
     
 #MM2 Stuff
-
+mm2_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mm2-aar-main'
 def check_and_update_version_mm2(mm2_gui_dir):
     # check_and_install_dependencies()
     gui_path = os.path.join(mm2_gui_dir, 'GUI.py')
