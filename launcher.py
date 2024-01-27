@@ -43,7 +43,7 @@ import zstandard
 #### Create Window ####
 #######################
 
-tool_version = "4.0"
+tool_version = "5.0"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
@@ -52,6 +52,7 @@ totk_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\totk-a
 smo_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\smo-aar-main'
 sm3dw_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\sm3dw-aar-main'
 mk8d_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mk8d-aar-main'
+mm2_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mm2-aar-main'
 
 dependencies = [
     "packaging",
@@ -186,6 +187,55 @@ def update_app_data_totk(totk_gui_dir, aar_dir):
     # Remove the downloaded zip file
     os.remove(zip_file_path)
     
+#MM2 Stuff
+
+def check_and_update_version_mm2(mm2_gui_dir):
+    # check_and_install_dependencies()
+    gui_path = os.path.join(mm2_gui_dir, 'GUI.py')
+    if os.path.exists(mm2_gui_dir):
+        with open(gui_path, 'r') as file:
+            for line in file:
+                if line.startswith("tool_version"):
+                    current_version = line.split('=')[1].strip().strip('"')
+                    break
+        # Download the GUI.py from the main branch on GitHub
+        url = 'https://raw.githubusercontent.com/fayaz12g/mm2-aar/main/GUI.py'
+        response = requests.get(url)
+        remote_version = None
+        for line in response.text.splitlines():
+            if line.startswith("tool_version"):
+                remote_version = line.split('=')[1].strip().strip('"')
+                break
+        if remote_version and current_version < remote_version:
+            print("New version available!")
+            update_text("New version available!")
+            return True
+        else:
+            return False
+    else:
+        return True
+    
+def update_app_data_mm2(mm2_gui_dir, aar_dir):
+    if os.path.exists(mm2_gui_dir):
+        shutil.rmtree(mm2_gui_dir)
+
+    # Download the contents of the GitHub repository
+    update_text("Downloading the contents of the GitHub repository...")
+    url = 'https://github.com/fayaz12g/mm2-aar/archive/main.zip'
+    response = requests.get(url)
+
+    # Save the downloaded content as a zip file
+    zip_file_path = os.path.join(aar_dir, 'mm2-aar-main.zip')
+    with open(zip_file_path, 'wb') as zip_file:
+        zip_file.write(response.content)
+
+    # Extract the zip file
+    with ZipFile(zip_file_path, 'r') as zip_ref:
+        zip_ref.extractall(aar_dir)
+
+    # Remove the downloaded zip file
+    os.remove(zip_file_path)
+
 #MK8D Stuff
     
 def check_and_update_version_mk8d(mk8d_gui_dir):
@@ -431,6 +481,30 @@ def launch_sm3dw():
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
 
+def launch_mm2():
+    if check_and_update_version_mm2(mm2_gui_dir):
+        update_app_data_mm2(mm2_gui_dir, aar_dir)
+
+    root.destroy()
+    # Specify the path to the Python script you want to launch
+    mm2_gui = os.path.join(mm2_gui_dir, 'GUI.py')
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
+
+    # Build the command to execute the other Python script
+    launch_mm2_command = ["python", mm2_gui]
+   
+    # Launch Using Old Method
+    sys.path.append(mm2_gui_dir)
+
+    # Use subprocess to launch the script
+    try:
+        import GUI
+        # subprocess.run(launch_mm2_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        update_text(f"Error: {e}")
+
+
 def update_text(new_text):
     text_box.config(state="normal")  # Set state to normal to enable editing
     text_box.delete(1.0, "end")  # Clear existing text
@@ -442,16 +516,19 @@ def update_text(new_text):
 show_update_progress()
 
 mario_button = customtkinter.CTkButton(master=root, text="AAR for Mario Odyssey", command=launch_smo)
-mario_button.pack(pady = 50)
+mario_button.pack(pady = 20)
 
 totk_button = customtkinter.CTkButton(master=root, text="AAR for Tears of the Kingdom", command=launch_totk)
-totk_button.pack(pady = 50)
+totk_button.pack(pady = 20)
 
 mk8d_button = customtkinter.CTkButton(master=root, text="AAR for MarioKart 8 Deluxe", command=launch_mk8d)
-mk8d_button.pack(pady = 50)
+mk8d_button.pack(pady = 20)
 
 sm3dw_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario 3D World + Bowser's Fury", command=launch_sm3dw)
-sm3dw_button.pack(pady = 50)
+sm3dw_button.pack(pady = 20)
+
+mm2_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario Maker 2", command=launch_mm2)
+mm2_button.pack(pady = 20)
 
 text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
 text_box.pack(pady=20)
