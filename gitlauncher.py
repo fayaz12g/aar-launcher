@@ -50,7 +50,7 @@ aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
     
 totk_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\totk-aar'
 smo_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\smo-aar'
-sm3dw_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\sm3dw-aar-main'
+sm3dw_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\sm3dw-aar'
 mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mk8d-aar'
 
 
