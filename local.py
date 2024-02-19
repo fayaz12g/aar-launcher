@@ -138,7 +138,7 @@ windowtitle = customtkinter.CTkLabel(master=root, font=(CTkFont, 20), text="Any 
 
 
 def launch_totk():
-    root.destroy()
+    
 
     # Specify the path to the Python script you want to launch
     totk_gui = os.path.join(totk_gui_dir, 'GUI.py')
@@ -160,7 +160,7 @@ def launch_totk():
         update_text(f"Error: {e}")
 
 def launch_mk8d():
-    root.destroy()
+    
 
     # Specify the path to the Python script you want to launch
     mk8d_gui = os.path.join(mk8d_gui_dir, 'GUI.py')
@@ -185,7 +185,7 @@ def launch_mk8d():
 
 def launch_smo():
 
-    root.destroy()
+    
     # Specify the path to the Python script you want to launch
     smo_gui = os.path.join(smo_gui_dir, 'GUI.py')
     # Get the path to the current executable (the PyInstaller-built application)
@@ -206,7 +206,7 @@ def launch_smo():
 
 def launch_sm3dw():
 
-    root.destroy()
+    
     # Specify the path to the Python script you want to launch
     sm3dw_gui = os.path.join(sm3dw_gui_dir, 'GUI.py')
     # Get the path to the current executable (the PyInstaller-built application)
@@ -227,7 +227,7 @@ def launch_sm3dw():
 
 def launch_mm2():
 
-    root.destroy()
+    
     # Specify the path to the Python script you want to launch
     mm2_gui = os.path.join(mm2_gui_dir, 'GUI.py')
     # Get the path to the current executable (the PyInstaller-built application)
