@@ -47,14 +47,25 @@ tool_version = "2.2"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
-    
-totk_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\totk-aar'
-smo_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\smo-aar'
-sm3dw_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\sm3dw-aar'
-mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mk8d-aar'
-mm2_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mm2-aar'
-ssbu_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\ssbu-aar'
-mvdk_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mvdk-aar'
+
+aar_tools_short = ['totk', 'smo', 'sm3dw', 'mk8d', 'mm2', 'ssbu', 'mvdk', '12switch']
+aar_names = ['Tears of the Kingdom', 'Super Mario Odyssey', 'Super Mario 3D World', 'MarioKart 8 Deluxe', 'Super Mario Maker 2', 'Super Smash Brothers Ultimate', 'Mario vs. Donkey Kong', '1-2 Switch']
+
+aar_tools = [
+    {'1': 'totk', '2': 'Tears of the Kingdom'},
+    {'1': 'smo', '2': 'Super Mario Odyssey'},
+    {'1': 'sm3dw', '2': 'Super Mario 3D World'},
+    {'1': 'mk8d', '2': 'MarioKart 8 Deluxe'},
+    {'1': 'mm2', '2': 'Super Mario Maker 2'},
+    {'1': 'ssbu', '2': 'Super Smash Brothers Ultimate'},
+    {'1': 'mvdk', '2': 'Mario vs. Donkey Kong'},
+    {'1': '12switch', '2': '1-2 Switch'}
+]
+
+gui_dirs = {}
+
+for tool in aar_tools:
+    gui_dirs[tool['1']] = f'C:\\Users\\{username}\\Documents\\GitHub\\{tool["1"]}-aar'
 
 dependencies = [
     "packaging",
@@ -139,161 +150,27 @@ customtkinter.set_default_color_theme("blue")
 windowtitle = customtkinter.CTkLabel(master=root, font=(CTkFont, 20), text="Any Aspect Ratio Launcher {tool_version}")
 
 
-def launch_totk():
-    
-    root.destroy()
+def launch_tool(tool_name):
+    root.destroy()  # Assuming `root` is defined elsewhere in your code
     # Specify the path to the Python script you want to launch
-    totk_gui = os.path.join(totk_gui_dir, 'GUI.py')
+    gui_script = os.path.join(gui_dirs[tool_name], 'GUI.py')
 
     # Get the path to the current executable (the PyInstaller-built application)
     current_executable = sys.executable
 
     # Build the command to execute the other Python script
-    launch_totk_command = ["python", totk_gui]
+    launch_command = [current_executable, gui_script]
 
     # Launch Using Old Method
-    sys.path.append(totk_gui_dir)
+    sys.path.append(gui_dirs[tool_name])
 
     # Use subprocess to launch the script
     try:
         import GUI
-        # subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        # subprocess.run(launch_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
 
-        
-def launch_mvdk():
-    
-    root.destroy()
-    # Specify the path to the Python script you want to launch
-    mvdk_gui = os.path.join(mvdk_gui_dir, 'GUI.py')
-
-    # Get the path to the current executable (the PyInstaller-built application)
-    current_executable = sys.executable
-
-    # Build the command to execute the other Python script
-    launch_mvdk_command = ["python", mvdk_gui]
-
-    # Launch Using Old Method
-    sys.path.append(mvdk_gui_dir)
-
-    # Use subprocess to launch the script
-    try:
-        import GUI
-        # subprocess.run(launch_mvdk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-    except subprocess.CalledProcessError as e:
-        update_text(f"Error: {e}")
-
-
-def launch_mk8d():
-    
-    root.destroy()
-    # Specify the path to the Python script you want to launch
-    mk8d_gui = os.path.join(mk8d_gui_dir, 'GUI.py')
-
-    # Get the path to the current executable (the PyInstaller-built application)
-    current_executable = sys.executable
-
-    # Build the command to execute the other Python script
-    launch_mk8d_command = ["python", mk8d_gui]
-   
-    # Launch Using Old Method
-    sys.path.append(mk8d_gui_dir)
-
-    # Use subprocess to launch the script
-    try:
-        import GUI
-        # subprocess.run(launch_mk8d_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-    except subprocess.CalledProcessError as e:
-        update_text(f"Error: {e}")
-    
-
-
-def launch_smo():
-
-    root.destroy()
-    # Specify the path to the Python script you want to launch
-    smo_gui = os.path.join(smo_gui_dir, 'GUI.py')
-    # Get the path to the current executable (the PyInstaller-built application)
-    current_executable = sys.executable
-
-    # Build the command to execute the other Python script
-    launch_smo_command = ["python", smo_gui]
-   
-    # Launch Using Old Method
-    sys.path.append(smo_gui_dir)
-
-    # Use subprocess to launch the script
-    try:
-        import GUI
-        # subprocess.run(launch_smo_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-    except subprocess.CalledProcessError as e:
-        update_text(f"Error: {e}")
-
-def launch_sm3dw():
-    root.destroy()
-    
-    # Specify the path to the Python script you want to launch
-    sm3dw_gui = os.path.join(sm3dw_gui_dir, 'GUI.py')
-    # Get the path to the current executable (the PyInstaller-built application)
-    current_executable = sys.executable
-
-    # Build the command to execute the other Python script
-    launch_sm3dw_command = ["python", sm3dw_gui]
-   
-    # Launch Using Old Method
-    sys.path.append(sm3dw_gui_dir)
-
-    # Use subprocess to launch the script
-    try:
-        import GUI
-        # subprocess.run(launch_sm3dw_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-    except subprocess.CalledProcessError as e:
-        update_text(f"Error: {e}")
-
-def launch_mm2():
-    root.destroy()
-    
-    # Specify the path to the Python script you want to launch
-    mm2_gui = os.path.join(mm2_gui_dir, 'GUI.py')
-    # Get the path to the current executable (the PyInstaller-built application)
-    current_executable = sys.executable
-
-    # Build the command to execute the other Python script
-    launch_mm2_command = ["python", mm2_gui]
-   
-    # Launch Using Old Method
-    sys.path.append(mm2_gui_dir)
-
-    # Use subprocess to launch the script
-    try:
-        import GUI
-        # subprocess.run(launch_mm2_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-    except subprocess.CalledProcessError as e:
-        update_text(f"Error: {e}")
-
-def launch_ssbu():
-    root.destroy()
-    
-    # Specify the path to the Python script you want to launch
-    ssbu_gui = os.path.join(ssbu_gui_dir, 'GUI.py')
-    # Get the path to the current executable (the PyInstaller-built application)
-    current_executable = sys.executable
-
-    # Build the command to execute the other Python script
-    launch_ssbu_command = ["python", ssbu_gui]
-   
-    # Launch Using Old Method
-    sys.path.append(ssbu_gui_dir)
-
-    # Use subprocess to launch the script
-    try:
-        sys.path.append(ssbu_gui)
-        sys.path.append(ssbu_gui_dir)
-        import GUI
-        # subprocess.run(launch_ssbu_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-    except subprocess.CalledProcessError as e:
-        update_text(f"Error: {e}")
 
 
 def update_text(new_text):
@@ -306,26 +183,9 @@ def update_text(new_text):
 # Automatically start the process
 show_update_progress()
 
-mario_button = customtkinter.CTkButton(master=root, text="AAR for Mario Odyssey", command=launch_smo)
-mario_button.pack(pady = 20)
-
-totk_button = customtkinter.CTkButton(master=root, text="AAR for Tears of the Kingdom", command=launch_totk)
-totk_button.pack(pady = 20)
-
-mk8d_button = customtkinter.CTkButton(master=root, text="AAR for MarioKart 8 Deluxe", command=launch_mk8d)
-mk8d_button.pack(pady = 20)
-
-sm3dw_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario 3D World + Bowser's Fury", command=launch_sm3dw)
-sm3dw_button.pack(pady = 20)
-
-mm2_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario Maker 2", command=launch_mm2)
-mm2_button.pack(pady = 20)
-
-ssbu_button = customtkinter.CTkButton(master=root, text="AAR for Super Smash Brothers Ultimate", command=launch_ssbu)
-ssbu_button.pack(pady = 20)
-
-ssbu_button = customtkinter.CTkButton(master=root, text="AAR for Mario VS Donkey Kong", command=launch_mvdk)
-ssbu_button.pack(pady = 20)
+for tool in aar_tools:
+    button = customtkinter.CTkButton(master=root, text=f"AAR for {tool["2"]}", command=lambda t=tool["1"]: launch_tool(t))
+    button.pack(pady=20)
 
 text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
 text_box.pack(pady=20)
