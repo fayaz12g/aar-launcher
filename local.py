@@ -43,7 +43,7 @@ import zstandard
 #### Create Window ####
 #######################
 
-tool_version = "2.1"
+tool_version = "2.2"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
@@ -54,6 +54,7 @@ sm3dw_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\sm3dw-aar'
 mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mk8d-aar'
 mm2_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mm2-aar'
 ssbu_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\ssbu-aar'
+mvdk_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mvdk-aar'
 
 dependencies = [
     "packaging",
@@ -159,6 +160,30 @@ def launch_totk():
         # subprocess.run(launch_totk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
+
+        
+def launch_mvdk():
+    
+    root.destroy()
+    # Specify the path to the Python script you want to launch
+    mvdk_gui = os.path.join(mvdk_gui_dir, 'GUI.py')
+
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
+
+    # Build the command to execute the other Python script
+    launch_mvdk_command = ["python", mvdk_gui]
+
+    # Launch Using Old Method
+    sys.path.append(mvdk_gui_dir)
+
+    # Use subprocess to launch the script
+    try:
+        import GUI
+        # subprocess.run(launch_mvdk_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        update_text(f"Error: {e}")
+
 
 def launch_mk8d():
     
@@ -297,6 +322,9 @@ mm2_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario Make
 mm2_button.pack(pady = 20)
 
 ssbu_button = customtkinter.CTkButton(master=root, text="AAR for Super Smash Brothers Ultimate", command=launch_ssbu)
+ssbu_button.pack(pady = 20)
+
+ssbu_button = customtkinter.CTkButton(master=root, text="AAR for Mario VS Donkey Kong", command=launch_mvdk)
 ssbu_button.pack(pady = 20)
 
 text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
