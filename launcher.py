@@ -43,7 +43,7 @@ import zstandard
 #### Create Window ####
 #######################
 
-tool_version = "5.0"
+tool_version = "5.1"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
@@ -52,6 +52,7 @@ totk_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\totk-a
 smo_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\smo-aar-main'
 sm3dw_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\sm3dw-aar-main'
 mk8d_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\mk8d-aar-main'
+ssbu_gui_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\ssbu-aar-main'
 
 dependencies = [
     "packaging",
@@ -379,6 +380,54 @@ def update_app_data_sm3dw(sm3dw_gui_dir, aar_dir):
     # Remove the downloaded zip file
     os.remove(zip_file_path)
 
+#SSBU Stuff
+
+def check_and_update_version_ssbu(ssbu_gui_dir):
+    # check_and_install_dependencies()
+    gui_path = os.path.join(ssbu_gui_dir, 'GUI.py')
+    if os.path.exists(ssbu_gui_dir):
+        with open(gui_path, 'r') as file:
+            for line in file:
+                if line.startswith("tool_version"):
+                    current_version = line.split('=')[1].strip().strip('"')
+                    break
+        # Download the GUI.py from the main branch on GitHub
+        url = 'https://raw.githubusercontent.com/fayaz12g/ssbu-aar/main/GUI.py'
+        response = requests.get(url)
+        remote_version = None
+        for line in response.text.splitlines():
+            if line.startswith("tool_version"):
+                remote_version = line.split('=')[1].strip().strip('"')
+                break
+        if remote_version and current_version < remote_version:
+            update_text("New version available!")
+            return True
+        else:
+            return False
+    else:
+        return True
+    
+def update_app_data_ssbu(ssbu_gui_dir, aar_dir):
+    if os.path.exists(ssbu_gui_dir):
+        shutil.rmtree(sm3dw_gui_dir)
+
+    # Download the contents of the GitHub repository
+    update_text("Downloading the contents of the GitHub repository...")
+    url = 'https://github.com/fayaz12g/ssbu-aar/archive/main.zip'
+    response = requests.get(url)
+
+    # Save the downloaded content as a zip file
+    zip_file_path = os.path.join(aar_dir, 'ssbu-aar-main.zip')
+    with open(zip_file_path, 'wb') as zip_file:
+        zip_file.write(response.content)
+
+    # Extract the zip file
+    with ZipFile(zip_file_path, 'r') as zip_ref:
+        zip_ref.extractall(aar_dir)
+
+    # Remove the downloaded zip file
+    os.remove(zip_file_path)
+
 
 
 def launch_totk():
@@ -500,6 +549,31 @@ def launch_mm2():
     try:
         import GUI
         # subprocess.run(launch_mm2_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        update_text(f"Error: {e}")
+
+
+
+def launch_ssbu():
+    if check_and_update_version_mm2(ssbu_gui_dir):
+        update_app_data_mm2(ssbu_gui_dir, aar_dir)
+
+    root.destroy()
+    # Specify the path to the Python script you want to launch
+    ssbu_gui = os.path.join(ssbu_gui_dir, 'GUI.py')
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
+
+    # Build the command to execute the other Python script
+    launch_ssbu_command = ["python", ssbu_gui]
+   
+    # Launch Using Old Method
+    sys.path.append(ssbu_gui_dir)
+
+    # Use subprocess to launch the script
+    try:
+        import GUI
+        # subprocess.run(launch_ssbu_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
 

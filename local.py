@@ -256,7 +256,7 @@ def launch_ssbu():
     current_executable = sys.executable
 
     # Build the command to execute the other Python script
-    launch_mm2_command = ["python", ssbu_gui]
+    launch_ssbu_command = ["python", ssbu_gui]
    
     # Launch Using Old Method
     sys.path.append(ssbu_gui_dir)
