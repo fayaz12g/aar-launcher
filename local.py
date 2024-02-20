@@ -263,6 +263,8 @@ def launch_ssbu():
 
     # Use subprocess to launch the script
     try:
+        sys.path.append(ssbu_gui)
+        sys.path.append(ssbu_gui_dir)
         import GUI
         # subprocess.run(launch_ssbu_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.CalledProcessError as e:
