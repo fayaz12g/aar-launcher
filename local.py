@@ -43,7 +43,7 @@ import zstandard
 #### Create Window ####
 #######################
 
-tool_version = "Local Git"
+tool_version = "2.0"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
@@ -53,6 +53,7 @@ smo_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\smo-aar'
 sm3dw_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\sm3dw-aar'
 mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mk8d-aar'
 mm2_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mm2-aar'
+ssbu_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\ssbu-aar'
 
 dependencies = [
     "packaging",
@@ -246,6 +247,27 @@ def launch_mm2():
     except subprocess.CalledProcessError as e:
         update_text(f"Error: {e}")
 
+def launch_ssbu():
+    root.destroy()
+    
+    # Specify the path to the Python script you want to launch
+    ssbu_gui = os.path.join(ssbu_gui_dir, 'GUI.py')
+    # Get the path to the current executable (the PyInstaller-built application)
+    current_executable = sys.executable
+
+    # Build the command to execute the other Python script
+    launch_mm2_command = ["python", ssbu_gui]
+   
+    # Launch Using Old Method
+    sys.path.append(ssbu_gui_dir)
+
+    # Use subprocess to launch the script
+    try:
+        import GUI
+        # subprocess.run(launch_ssbu_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.CalledProcessError as e:
+        update_text(f"Error: {e}")
+
 
 def update_text(new_text):
     text_box.config(state="normal")  # Set state to normal to enable editing
@@ -271,6 +293,9 @@ sm3dw_button.pack(pady = 20)
 
 mm2_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario Maker 2", command=launch_mm2)
 mm2_button.pack(pady = 20)
+
+ssbu_button = customtkinter.CTkButton(master=root, text="AAR for Super Smash Brothers Ultimate", command=launch_ssbu)
+ssbu_button.pack(pady = 20)
 
 text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
 text_box.pack(pady=20)

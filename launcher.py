@@ -529,6 +529,9 @@ sm3dw_button.pack(pady = 20)
 mm2_button = customtkinter.CTkButton(master=root, text="AAR for Super Mario Maker 2", command=launch_mm2)
 mm2_button.pack(pady = 20)
 
+ssbu_button = customtkinter.CTkButton(master=root, text="AAR for Super Smash Brothers Ultimate", command=launch_ssbu)
+ssbu_button.pack(pady = 20)
+
 text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
 text_box.pack(pady=20)
 
