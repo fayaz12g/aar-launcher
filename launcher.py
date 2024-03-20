@@ -43,7 +43,7 @@ import zstandard
 #### Create Window ####
 #######################
 
-tool_version = "5.3"
+tool_version = "5.4"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
@@ -56,7 +56,7 @@ aar_tools = [
     {'1': 'mm2', '2': 'Super Mario Maker 2'},
     {'1': 'ssbu', '2': 'Super Smash Brothers Ultimate'},
     {'1': 'mvdk', '2': 'Mario vs. Donkey Kong'},
-    {'1': '12switch', '2': '1-2 Switch'}
+    {'1': '12switch', '2': '1-2 Switch'},
     {'1': 'splatoon3', '2': 'Splatoon 3'}
 ]
 
