@@ -43,7 +43,7 @@ import zstandard
 #### Create Window ####
 #######################
 
-tool_version = "5.2"
+tool_version = "5.3"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
@@ -57,6 +57,7 @@ aar_tools = [
     {'1': 'ssbu', '2': 'Super Smash Brothers Ultimate'},
     {'1': 'mvdk', '2': 'Mario vs. Donkey Kong'},
     {'1': '12switch', '2': '1-2 Switch'}
+    {'1': 'splatoon3', '2': 'Splatoon 3'}
 ]
 
 gui_dirs = {}
