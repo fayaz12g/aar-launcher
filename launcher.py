@@ -3,6 +3,7 @@ import sys
 import shutil
 import requests
 from zipfile import ZipFile
+from threading import Thread
 import getpass
 import webbrowser
 from tkinter import *
@@ -38,6 +39,75 @@ import zstandard
 from keystone import *
 import pyautogui
 
+dependencies = [
+    "packaging",
+    "requests",
+    "tkinter",
+    "customtkinter",
+    "sarclib",
+    "psutil",
+    "pillow",
+    "keystone-engine",
+    "certifi",
+    "idna",
+    "charset_normalizer",
+    "darkdetect",
+    "libyaz0",
+    "urllib3",
+    "zstandard",
+    "pyautogui",
+]
+
+#######################
+## Helper Functions ###
+#######################
+
+def is_pip_installed():
+    try:
+        subprocess.run(["pip", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+# Function to install pip
+def install_pip():
+    try:
+        subprocess.run(["python", "-m", "ensurepip", "--default-pip"], check=True)
+        print("pip has been successfully installed.")
+    except subprocess.CalledProcessError:
+        print("Failed to install pip. Please install it manually.")
+
+
+# Function to check and install dependencies
+def check_and_install_dependencies():
+    if not is_pip_installed():
+        print("pip is not installed. Attempting to install pip...")
+        install_pip()
+        
+    for dependency in dependencies:
+        try:
+            __import__(dependency)
+            print(f"{dependency} is already installed.")
+        except ImportError:
+            print(f"{dependency} is not installed. Attempting to install...")
+            install_dependency(dependency)
+
+# Function to install a specific dependency using pip
+def install_dependency(dependency):
+    try:
+        subprocess.run(["python", "-m", "pip", "install", dependency], check=True)
+        print(f"{dependency} has been successfully installed.")
+    except subprocess.CalledProcessError:
+        print(f"Failed to install {dependency}. Please install it manually.")
+
+# Create a Tkinter window to display the update progress
+def show_update_progress():
+    global aar_dir
+
+    # Check if the directory exists
+    if not os.path.exists(aar_dir):
+        print(f"Directory '{aar_dir}' does not exist. Creating the directory...")
+        os.makedirs(aar_dir)
 
 
 
@@ -69,84 +139,12 @@ gui_dirs = {}
 for tool in aar_tools:
     gui_dirs[tool['1']] = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\{tool["1"]}-aar-main'
 
-dependencies = [
-    "packaging",
-    "requests",
-    "tkinter",
-    "customtkinter",
-    "sarclib",
-    "psutil",
-    "pillow",
-    "keystone-engine",
-    "certifi",
-    "idna",
-    "charset_normalizer",
-    "darkdetect",
-    "libyaz0",
-    "urllib3",
-    "zstandard",
-    "pyautogui",
-]
-
-def update_text(new_text):
-    text_box.config(state="normal")  # Set state to normal to enable editing
-    text_box.delete(1.0, "end")  # Clear existing text
-    text_box.insert("end", new_text)  # Insert new text
-    text_box.config(state="disabled")  # Set state to disabled to make it read-only
     
-def is_pip_installed():
-    try:
-        subprocess.run(["pip", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        return True
-    except subprocess.CalledProcessError:
-        return False
-
-# Function to install pip
-def install_pip():
-    try:
-        subprocess.run(["python", "-m", "ensurepip", "--default-pip"], check=True)
-        update_text("pip has been successfully installed.")
-    except subprocess.CalledProcessError:
-        update_text("Failed to install pip. Please install it manually.")
-
-
-# Function to check and install dependencies
-def check_and_install_dependencies():
-    if not is_pip_installed():
-        update_text("pip is not installed. Attempting to install pip...")
-        install_pip()
-        
-    for dependency in dependencies:
-        try:
-            __import__(dependency)
-            update_text(f"{dependency} is already installed.")
-        except ImportError:
-            update_text(f"{dependency} is not installed. Attempting to install...")
-            install_dependency(dependency)
-
-# Function to install a specific dependency using pip
-def install_dependency(dependency):
-    try:
-        subprocess.run(["python", "-m", "pip", "install", dependency], check=True)
-        update_text(f"{dependency} has been successfully installed.")
-    except subprocess.CalledProcessError:
-        update_text(f"Failed to install {dependency}. Please install it manually.")
-
-# Create a Tkinter window to display the update progress
-def show_update_progress():
-    global aar_dir
-
-    # Check if the directory exists
-    if not os.path.exists(aar_dir):
-        update_text(f"Directory '{aar_dir}' does not exist. Creating the directory...")
-        os.makedirs(aar_dir)
-
-
 show_update_progress()
 
 root = customtkinter.CTk()
 root.title(f"Any Aspect Ratio Launcher {tool_version}")
-root.geometry("450x800")
+root.geometry("400x450")
 
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")  
@@ -172,7 +170,7 @@ def check_and_update_version(gui_dir, tool_name):
                 break
         if remote_version and current_version < remote_version:
             print("New version available!")
-            update_text("New version available!")
+            print("New version available!")
             return True
         else:
             return False
@@ -184,7 +182,7 @@ def update_app_data(gui_dir, aar_dir, tool_name):
         shutil.rmtree(gui_dir)
 
     # Download the contents of the GitHub repository
-    update_text("Downloading the contents of the GitHub repository...")
+    print("Downloading the contents of the GitHub repository...")
     url = f'https://github.com/fayaz12g/{tool_name}-aar/archive/main.zip'
     response = requests.get(url)
 
@@ -201,50 +199,69 @@ def update_app_data(gui_dir, aar_dir, tool_name):
     os.remove(zip_file_path)
 
 
-def launch_tool(tool_name):
-    
-    if check_and_update_version(gui_dirs[tool_name], tool_name):
-        update_app_data(gui_dirs[tool_name], aar_dir, tool_name)
+titlebar = customtkinter.CTkLabel(text="Select a Game, then Click the Launch AAR Button:", master = root)
+titlebar.pack(pady=50)
 
-    root.destroy()  # Assuming `root` is defined elsewhere in your code
-    # Specify the path to the Python script you want to launch
-    gui_script = os.path.join(gui_dirs[tool_name], 'GUI.py')
+# Update the button's state when a tool is selected
+def update_button_state(choice):
+    if choice != "Select a Game":
+        launch_button.configure(state=tkinter.NORMAL)
+    else:
+        launch_button.configure(state=tkinter.DISABLED)
 
-    # Get the path to the current executable (the PyInstaller-built application)
-    current_executable = sys.executable
+# Create a dropdown menu
+combo = customtkinter.CTkComboBox(root, state="readonly", values = [tool["2"] for tool in aar_tools], width = 250, hover=True, command = update_button_state)
+combo['values'] = [tool["2"] for tool in aar_tools]
+combo.pack(pady=20)
 
-    # Build the command to execute the other Python script
-    launch_command = [current_executable, gui_script]
+combo.set("Select a Game")
 
-    # Launch Using Old Method
-    sys.path.append(gui_dirs[tool_name])
+# Create a dictionary that maps full tool names to short tool names
+tool_name_map = {tool["2"]: tool["1"] for tool in aar_tools}
 
-    # Use subprocess to launch the script
-    try:
-        import GUI
-        # subprocess.run(launch_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-    except subprocess.CalledProcessError as e:
-        update_text(f"Error: {e}")
+# Create a button to launch the selected tool
+launch_button = customtkinter.CTkButton(root, text="Launch AAR", state=tkinter.DISABLED, hover=True, text_color="white")
+launch_button.pack(pady=20)
 
-def update_text(new_text):
-    text_box.config(state="normal")  # Set state to normal to enable editing
-    text_box.delete(1.0, "end")  # Clear existing text
-    text_box.insert("end", new_text)  # Insert new text
-    text_box.config(state="disabled")  # Set state to disabled to make it read-only
+def newthread(aar_dir, tool_name):
+    t = Thread(target=update_app_data(gui_dirs[tool_name], aar_dir, tool_name))
+    t.start() 
 
+def launch_tool(event):
+    full_tool_name = combo.get()
+    if full_tool_name != "Select a Game":
+        tool_name = tool_name_map[full_tool_name]
+        update_notification = customtkinter.CTkLabel(text="Fetching contents, please wait...", master = root)
+        update_notification.pack(pady=5)
+        if check_and_update_version(gui_dirs[tool_name], tool_name):
+            newthread(aar_dir, tool_name)
+        gui_script = os.path.join(gui_dirs[tool_name], 'GUI.py')
+
+        # Get the path to the current executable (the PyInstaller-built application)
+        current_executable = sys.executable
+
+        # Build the command to execute the other Python script
+        launch_command = [current_executable, gui_script]
+
+        # Launch Using Old Method
+        sys.path.append(gui_dirs[tool_name])
+        root.destroy() 
+        # Use subprocess to launch the script
+        try:
+            import GUI
+            # subprocess.run(launch_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")
+
+launch_button.bind("<Button-1>", launch_tool)
+
+def open_aar_folder():
+    os.startfile(aar_dir)
+
+open_folder_button = customtkinter.CTkButton(root, text="Open AAR Folder", command=open_aar_folder)
+open_folder_button.pack(pady=20)
 
 # Automatically start the process
 show_update_progress()
-
-for tool in aar_tools:
-    button = customtkinter.CTkButton(master=root, text=f"AAR for {tool["2"]}", command=lambda t=tool["1"]: launch_tool(t))
-    button.pack(pady=20)
-
-
-text_box = scrolledtext.ScrolledText(master=root, wrap="word", height=30, width=70)
-text_box.pack(pady=20)
-
-default_text = "Click the game you want to use the tool for!"
-update_text(default_text)
 
 root.mainloop()

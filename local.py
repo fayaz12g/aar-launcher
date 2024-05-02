@@ -140,7 +140,7 @@ def show_update_progress():
 
 root = customtkinter.CTk()
 root.title(f"Any Aspect Ratio Launcher {tool_version}")
-root.geometry("450x300")
+root.geometry("400x450")
 
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")  
@@ -172,9 +172,10 @@ launch_button.pack(pady=20)
 
 def launch_tool(event):
     full_tool_name = combo.get()
+    update_notification = customtkinter.CTkLabel(text="Fetching contents, please wait...", master = root)
+    update_notification.pack(pady=5)
     if full_tool_name != "Select a Game":
         tool_name = tool_name_map[full_tool_name]
-        root.destroy() 
         gui_script = os.path.join(gui_dirs[tool_name], 'GUI.py')
 
         # Get the path to the current executable (the PyInstaller-built application)
@@ -185,7 +186,7 @@ def launch_tool(event):
 
         # Launch Using Old Method
         sys.path.append(gui_dirs[tool_name])
-
+        root.destroy() 
         # Use subprocess to launch the script
         try:
             import GUI
@@ -194,6 +195,12 @@ def launch_tool(event):
             print(f"Error: {e}")
 
 launch_button.bind("<Button-1>", launch_tool)
+
+def open_aar_folder():
+    os.startfile(aar_dir)
+
+open_folder_button = customtkinter.CTkButton(root, text="Open AAR Folder", command=open_aar_folder)
+open_folder_button.pack(pady=20)
 
 # Automatically start the process
 show_update_progress()
