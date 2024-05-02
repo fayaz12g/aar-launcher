@@ -45,7 +45,7 @@ import pyautogui
 #### Create Window ####
 #######################
 
-tool_version = "5.6"
+tool_version = "5.7"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
