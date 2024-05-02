@@ -34,6 +34,8 @@ import charset_normalizer
 import darkdetect
 import libyaz0
 import urllib3
+from keystone import *
+import pyautogui
 import zstandard
 
 
@@ -61,7 +63,8 @@ aar_tools = [
     {'1': 'mvdk', '2': 'Mario vs. Donkey Kong'},
     {'1': '12switch', '2': '1-2 Switch'},
     {'1': 'splatoon3', '2': 'Splatoon 3'},
-    {'1': 'splatoon2', '2': 'Splatoon 2'}
+    {'1': 'splatoon2', '2': 'Splatoon 2'},
+    {'1': 'pmtok', '2': 'Paper Mario: The Origami King'}
 ]
 
 gui_dirs = {}
@@ -85,6 +88,7 @@ dependencies = [
     "libyaz0",
     "urllib3",
     "zstandard",
+    "pyautogui",
 ]
 
 def update_text(new_text):
