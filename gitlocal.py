@@ -105,7 +105,7 @@ def install_dependency(dependency):
 #### Create Window ####
 #######################
 
-tool_version = "3.0"
+tool_version = "6.0"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
@@ -139,7 +139,7 @@ def show_update_progress():
         os.makedirs(aar_dir)
 
 root = customtkinter.CTk()
-root.title(f"Any Aspect Ratio Launcher {tool_version}")
+root.title(f"Any Aspect Ratio Local Launcher {tool_version}")
 root.geometry("400x450")
 
 customtkinter.set_appearance_mode("system")
