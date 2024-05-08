@@ -52,7 +52,7 @@ totk_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\totk-aar'
 smo_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\smo-aar'
 sm3dw_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\sm3dw-aar'
 mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mk8d-aar'
-mk8d_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mm2-aar'
+mm2_gui_dir = f'C:\\Users\\{username}\\Documents\\GitHub\\mm2-aar'
 
 
 root = customtkinter.CTk()
