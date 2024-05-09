@@ -115,7 +115,7 @@ def show_update_progress():
 #### Create Window ####
 #######################
 
-tool_version = "6.0"
+tool_version = "6.1"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
