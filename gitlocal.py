@@ -125,6 +125,8 @@ aar_tools = [
     {'1': 'pmtok', '2': 'Paper Mario: The Origami King'}
 ]
 
+customtkinter.deactivate_automatic_dpi_awareness()
+
 gui_dirs = {}
 
 for tool in aar_tools:
