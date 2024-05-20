@@ -118,7 +118,16 @@ def show_update_progress():
 tool_version = "6.1"
 
 username = getpass.getuser()
-aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
+# Determine the user's home directory based on the platform
+if sys.platform == 'win32':
+    username = os.environ.get('USERNAME')
+    aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
+elif sys.platform == 'darwin':  # macOS
+    username = os.getlogin()
+    aar_dir = f'/Users/{username}/Library/Application Support/AnyAspectRatio'
+else:
+    # Handle other platforms if necessary
+    raise NotImplementedError("Unsupported platform")
     
 aar_tools = [
     {'1': 'totk', '2': 'Tears of the Kingdom'},
@@ -138,7 +147,7 @@ aar_tools = [
 gui_dirs = {}
 
 for tool in aar_tools:
-    gui_dirs[tool['1']] = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\{tool["1"]}-aar-main'
+    gui_dirs[tool['1']] = os.path.join(aar_dir, f'{tool["1"]}-aar-main')
 
     
 show_update_progress()
@@ -170,7 +179,6 @@ def check_and_update_version(gui_dir, tool_name):
                 remote_version = line.split('=')[1].strip().strip('"')
                 break
         if remote_version and current_version < remote_version:
-            print("New version available!")
             print("New version available!")
             return True
         else:
