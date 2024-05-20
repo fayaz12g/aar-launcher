@@ -115,16 +115,18 @@ def show_update_progress():
 #### Create Window ####
 #######################
 
-tool_version = "6.1"
+tool_version = "6.2"
 
-username = getpass.getuser()
 # Determine the user's home directory based on the platform
 if sys.platform == 'win32':
     username = os.environ.get('USERNAME')
     aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
 elif sys.platform == 'darwin':  # macOS
-    username = os.getlogin()
+    username = os.getenv('USER') or os.getenv('LOGNAME')
     aar_dir = f'/Users/{username}/Library/Application Support/AnyAspectRatio'
+elif sys.platform.startswith('linux'):  # Linux
+    username = os.getenv('USER') or os.getenv('LOGNAME')
+    aar_dir = f'/home/{username}/.config/AnyAspectRatio'
 else:
     # Handle other platforms if necessary
     raise NotImplementedError("Unsupported platform")
