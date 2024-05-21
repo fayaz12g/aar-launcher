@@ -143,6 +143,7 @@ aar_tools = [
     {'1': '12switch', '2': '1-2 Switch'},
     {'1': 'splatoon3', '2': 'Splatoon 3'},
     {'1': 'splatoon2', '2': 'Splatoon 2'},
+    {'1': 'ppst', '2': 'Princess Peach: Showtime!'},
     {'1': 'pmtok', '2': 'Paper Mario: The Origami King'}
 ]
 
