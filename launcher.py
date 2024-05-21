@@ -115,7 +115,7 @@ def show_update_progress():
 #### Create Window ####
 #######################
 
-tool_version = "6.2"
+tool_version = "6.3"
 
 # Determine the user's home directory based on the platform
 if sys.platform == 'win32':

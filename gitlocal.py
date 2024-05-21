@@ -105,7 +105,7 @@ def install_dependency(dependency):
 #### Create Window ####
 #######################
 
-tool_version = "6.1"
+tool_version = "6.3"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
