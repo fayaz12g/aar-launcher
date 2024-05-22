@@ -115,7 +115,7 @@ def show_update_progress():
 #### Create Window ####
 #######################
 
-tool_version = "6.5"
+tool_version = "6.6"
 
 # Determine the user's home directory based on the platform
 if sys.platform == 'win32':
@@ -132,6 +132,7 @@ else:
     raise NotImplementedError("Unsupported platform")
     
 aar_tools = [
+    {'1': 'home', '2': 'Home Menu'},
     {'1': 'totk', '2': 'Tears of the Kingdom'},
     {'1': 'botw', '2': 'Breath of the Wild'},
     {'1': 'smo', '2': 'Super Mario Odyssey'},
