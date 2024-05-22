@@ -105,7 +105,7 @@ def install_dependency(dependency):
 #### Create Window ####
 #######################
 
-tool_version = "6.3"
+tool_version = "6.4"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
@@ -123,6 +123,7 @@ aar_tools = [
     {'1': 'splatoon3', '2': 'Splatoon 3'},
     {'1': 'splatoon2', '2': 'Splatoon 2'},
     {'1': 'ppst', '2': 'Princess Peach: Showtime!'},
+    {'1': 'Nintendo Switch Sports', '2': 'nss'},
     {'1': 'pmtok', '2': 'Paper Mario: The Origami King'}
 ]
 
