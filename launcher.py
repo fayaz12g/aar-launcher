@@ -146,6 +146,7 @@ aar_tools = [
     {'1': 'splatoon2', '2': 'Splatoon 2'},
     {'1': 'nss', '2': 'Nintendo Switch Sports'},
     {'1': 'ppst', '2': 'Princess Peach: Showtime!'},
+    {'1': 'ttyd', '2': 'Paper Mario: The Thousand Year Door'},
     {'1': 'pmtok', '2': 'Paper Mario: The Origami King'}
 ]
 
