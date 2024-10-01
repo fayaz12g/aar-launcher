@@ -105,7 +105,7 @@ def install_dependency(dependency):
 #### Create Window ####
 #######################
 
-tool_version = "6.7"
+tool_version = "6.8"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
@@ -114,6 +114,7 @@ aar_tools = [
     {'1': 'home', '2': 'Home Menu'},
     {'1': 'totk', '2': 'Tears of the Kingdom'},
     {'1': 'botw', '2': 'Breath of the Wild'},
+    {'1': 'eow', '2': 'Echoes of Wisdom'},
     {'1': 'smo', '2': 'Super Mario Odyssey'},
     {'1': 'sm3dw', '2': 'Super Mario 3D World'},
     {'1': 'mk8d', '2': 'MarioKart 8 Deluxe'},

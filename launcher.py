@@ -115,7 +115,7 @@ def show_update_progress():
 #### Create Window ####
 #######################
 
-tool_version = "6.6"
+tool_version = "6.7"
 
 # Determine the user's home directory based on the platform
 if sys.platform == 'win32':
@@ -135,6 +135,7 @@ aar_tools = [
     {'1': 'home', '2': 'Home Menu'},
     {'1': 'totk', '2': 'Tears of the Kingdom'},
     {'1': 'botw', '2': 'Breath of the Wild'},
+    {'1': 'eow', '2': 'Echoes of Wisdom'},
     {'1': 'smo', '2': 'Super Mario Odyssey'},
     {'1': 'sm3dw', '2': 'Super Mario 3D World'},
     {'1': 'mk8d', '2': 'MarioKart 8 Deluxe'},
