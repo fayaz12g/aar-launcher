@@ -105,7 +105,7 @@ def install_dependency(dependency):
 #### Create Window ####
 #######################
 
-tool_version = "6.9"
+tool_version = "7.0"
 
 username = getpass.getuser()
 aar_dir = f'C:\\Users\\{username}\\Documents\\GitHub'
@@ -128,7 +128,8 @@ aar_tools = [
     {'1': 'ppst', '2': 'Princess Peach: Showtime!'},
     {'1': 'nss', '2': 'Nintendo Switch Sports'},
     {'1': 'ttyd', '2': 'Paper Mario: The Thousand Year Door'},
-    {'1': 'pmtok', '2': 'Paper Mario: The Origami King'}
+    {'1': 'pmtok', '2': 'Paper Mario: The Origami King'},
+    {'1': 'acnh', '2': 'Animal Crossing New Horizons'},
 ]
 
 customtkinter.deactivate_automatic_dpi_awareness()
