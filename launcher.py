@@ -115,7 +115,7 @@ def show_update_progress():
 #### Create Window ####
 #######################
 
-tool_version = "7.0"
+tool_version = "7.1"
 
 # Determine the user's home directory based on the platform
 if sys.platform == 'win32':
@@ -137,6 +137,7 @@ aar_tools = [
     {'1': 'botw', '2': 'Breath of the Wild'},
     {'1': 'eow', '2': 'Echoes of Wisdom'},
     {'1': 'zla', '2': "Link's Awakening"},
+    {'1': 'won', '2': 'Super Mario Wonder'},
     {'1': 'smo', '2': 'Super Mario Odyssey'},
     {'1': 'sm3dw', '2': 'Super Mario 3D World'},
     {'1': 'mk8d', '2': 'MarioKart 8 Deluxe'},
@@ -146,12 +147,14 @@ aar_tools = [
     {'1': '12switch', '2': '1-2 Switch'},
     {'1': 'splatoon3', '2': 'Splatoon 3'},
     {'1': 'splatoon2', '2': 'Splatoon 2'},
-    {'1': 'nss', '2': 'Nintendo Switch Sports'},
     {'1': 'ppst', '2': 'Princess Peach: Showtime!'},
+    {'1': 'nss', '2': 'Nintendo Switch Sports'},
     {'1': 'ttyd', '2': 'Paper Mario: The Thousand Year Door'},
     {'1': 'pmtok', '2': 'Paper Mario: The Origami King'},
     {'1': 'acnh', '2': 'Animal Crossing New Horizons'},
+    {'1': 'ctt', '2': 'Captain Toad Treasure Tracker'},
 ]
+
 
 gui_dirs = {}
 
