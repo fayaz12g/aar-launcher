@@ -289,12 +289,12 @@ class GameLauncher(customtkinter.CTk):
         )
         self.title_label.grid(row=0, column=0, pady=(0, 20))
 
-        # Search bar
+        # Search bar with updated placeholder
         self.search_var = customtkinter.StringVar()
         self.search_var.trace('w', self.filter_games)
         self.search_entry = customtkinter.CTkEntry(
             self.main_container,
-            placeholder_text="Search games...",
+            placeholder_text="Search for a game...",  # Updated placeholder text
             width=300,
             textvariable=self.search_var
         )
@@ -358,19 +358,30 @@ class GameLauncher(customtkinter.CTk):
                     if success:
                         loading_window.update_progress(1.0, "Cover art download complete!")
                         self.after(1000, loading_window.destroy)
+                        # Initialize game cards after successful download
+                        self.after(1100, self.initialize_game_cards)
                     else:
                         loading_window.status_label.configure(text="Error downloading cover art")
                         loading_window.progressbar.configure(progress_color="red")
                         self.after(2000, loading_window.destroy)
+                        # Initialize game cards even if download failed
+                        self.after(2100, self.initialize_game_cards)
                 
                 self.after(0, update_ui)
             
             Thread(target=download_process, daemon=True).start()
             loading_window.update_progress(0.5, "Downloading and extracting cover art...")
+        else:
+            # If no images are missing, initialize cards immediately
+            self.initialize_game_cards()
 
     def initialize_game_cards(self):
-        # Create game cards
+        # Clear existing cards if any
+        for card in self.game_cards:
+            card['frame'].destroy()
         self.game_cards = []
+        
+        # Create new cards
         self.create_game_cards()
 
     def create_game_card(self, game_info, row, col):
