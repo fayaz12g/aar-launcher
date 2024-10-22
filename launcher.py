@@ -12,33 +12,13 @@ from tkinter.filedialog import askdirectory
 import customtkinter
 from customtkinter import *
 from PIL import Image, ImageTk
-import os
-from threading import Thread
-import getpass
-from pathlib import Path
-import sys
-import shutil
-import requests
 import subprocess
-import sys
-import os
-import time
 import packaging
-import requests
-import tkinter
-import customtkinter
 import psutil
-import PIL
-import certifi
-import idna
-import charset_normalizer
-import darkdetect
-import libyaz0
-import urllib3
-import zstandard
 from keystone import *
 import pyautogui
 
+# Keep your original dependencies list
 dependencies = [
     "packaging",
     "requests",
@@ -58,10 +38,7 @@ dependencies = [
     "pyautogui",
 ]
 
-#######################
-## Helper Functions ###
-#######################
-
+# Keep all your original helper functions
 def is_pip_installed():
     try:
         subprocess.run(["pip", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -69,7 +46,6 @@ def is_pip_installed():
     except subprocess.CalledProcessError:
         return False
 
-# Function to install pip
 def install_pip():
     try:
         subprocess.run(["python", "-m", "ensurepip", "--default-pip"], check=True)
@@ -77,8 +53,6 @@ def install_pip():
     except subprocess.CalledProcessError:
         print("Failed to install pip. Please install it manually.")
 
-
-# Function to check and install dependencies
 def check_and_install_dependencies():
     if not is_pip_installed():
         print("pip is not installed. Attempting to install pip...")
@@ -92,7 +66,6 @@ def check_and_install_dependencies():
             print(f"{dependency} is not installed. Attempting to install...")
             install_dependency(dependency)
 
-# Function to install a specific dependency using pip
 def install_dependency(dependency):
     try:
         subprocess.run(["python", "-m", "pip", "install", dependency], check=True)
@@ -100,37 +73,29 @@ def install_dependency(dependency):
     except subprocess.CalledProcessError:
         print(f"Failed to install {dependency}. Please install it manually.")
 
-# Create a Tkinter window to display the update progress
 def show_update_progress():
     global aar_dir
-
-    # Check if the directory exists
     if not os.path.exists(aar_dir):
         print(f"Directory '{aar_dir}' does not exist. Creating the directory...")
         os.makedirs(aar_dir)
 
+# Keep your version and directory setup
+tool_version = "8.0"
 
-
-#######################
-#### Create Window ####
-#######################
-
-tool_version = "7.1"
-
-# Determine the user's home directory based on the platform
+# Platform-specific directory setup
 if sys.platform == 'win32':
     username = os.environ.get('USERNAME')
     aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
-elif sys.platform == 'darwin':  # macOS
+elif sys.platform == 'darwin':
     username = os.getenv('USER') or os.getenv('LOGNAME')
     aar_dir = f'/Users/{username}/Library/Application Support/AnyAspectRatio'
-elif sys.platform.startswith('linux'):  # Linux
+elif sys.platform.startswith('linux'):
     username = os.getenv('USER') or os.getenv('LOGNAME')
     aar_dir = f'/home/{username}/.config/AnyAspectRatio'
 else:
-    # Handle other platforms if necessary
     raise NotImplementedError("Unsupported platform")
-    
+
+# Keep your original tools list
 aar_tools = [
     {'1': 'home', '2': 'Home Menu'},
     {'1': 'totk', '2': 'Tears of the Kingdom'},
@@ -155,26 +120,13 @@ aar_tools = [
     {'1': 'ctt', '2': 'Captain Toad Treasure Tracker'},
 ]
 
-
+# Setup gui_dirs
 gui_dirs = {}
-
 for tool in aar_tools:
     gui_dirs[tool['1']] = os.path.join(aar_dir, f'{tool["1"]}-aar-main')
 
-    
-show_update_progress()
-
-root = customtkinter.CTk()
-root.title(f"Any Aspect Ratio Launcher {tool_version}")
-root.geometry("400x450")
-
-customtkinter.set_appearance_mode("system")
-customtkinter.set_default_color_theme("blue")  
-windowtitle = customtkinter.CTkLabel(master=root, font=(CTkFont, 20), text="Any Aspect Ratio Launcher {tool_version}")
-
-
+# Keep your version checking and update functions
 def check_and_update_version(gui_dir, tool_name):
-    # check_and_install_dependencies()
     gui_path = os.path.join(gui_dir, 'GUI.py')
     if os.path.exists(gui_dir):
         with open(gui_path, 'r') as file:
@@ -182,7 +134,6 @@ def check_and_update_version(gui_dir, tool_name):
                 if line.startswith("tool_version"):
                     current_version = line.split('=')[1].strip().strip('"')
                     break
-        # Download the GUI.py from the main branch on GitHub
         url = f'https://raw.githubusercontent.com/fayaz12g/{tool_name}-aar/main/GUI.py'
         response = requests.get(url)
         remote_version = None
@@ -197,92 +148,242 @@ def check_and_update_version(gui_dir, tool_name):
             return False
     else:
         return True
-    
+
 def update_app_data(gui_dir, aar_dir, tool_name):
     if os.path.exists(gui_dir):
         shutil.rmtree(gui_dir)
 
-    # Download the contents of the GitHub repository
     print("Downloading the contents of the GitHub repository...")
     url = f'https://github.com/fayaz12g/{tool_name}-aar/archive/main.zip'
     response = requests.get(url)
 
-    # Save the downloaded content as a zip file
     zip_file_path = os.path.join(aar_dir, f'{tool_name}-aar-main.zip')
     with open(zip_file_path, 'wb') as zip_file:
         zip_file.write(response.content)
 
-    # Extract the zip file
     with ZipFile(zip_file_path, 'r') as zip_ref:
         zip_ref.extractall(aar_dir)
 
-    # Remove the downloaded zip file
     os.remove(zip_file_path)
 
-
-titlebar = customtkinter.CTkLabel(text="Select a Game, then Click the Launch AAR Button:", master = root)
-titlebar.pack(pady=50)
-
-# Update the button's state when a tool is selected
-def update_button_state(choice):
-    if choice != "Select a Game":
-        launch_button.configure(state=tkinter.NORMAL)
-    else:
-        launch_button.configure(state=tkinter.DISABLED)
-
-# Create a dropdown menu
-combo = customtkinter.CTkComboBox(root, state="readonly", values = [tool["2"] for tool in aar_tools], width = 250, hover=True, command = update_button_state)
-combo['values'] = [tool["2"] for tool in aar_tools]
-combo.pack(pady=20)
-
-combo.set("Select a Game")
-
-# Create a dictionary that maps full tool names to short tool names
-tool_name_map = {tool["2"]: tool["1"] for tool in aar_tools}
-
-# Create a button to launch the selected tool
-launch_button = customtkinter.CTkButton(root, text="Launch AAR", state=tkinter.DISABLED, hover=True, text_color="white")
-launch_button.pack(pady=20)
-
 def newthread(aar_dir, tool_name):
-    t = Thread(target=update_app_data(gui_dirs[tool_name], aar_dir, tool_name))
-    t.start() 
+    t = Thread(target=update_app_data, args=(gui_dirs[tool_name], aar_dir, tool_name))
+    t.start()
 
-def launch_tool(event):
-    full_tool_name = combo.get()
-    if full_tool_name != "Select a Game":
-        tool_name = tool_name_map[full_tool_name]
-        update_notification = customtkinter.CTkLabel(text="Fetching contents, please wait...", master = root)
-        update_notification.pack(pady=5)
+# New Modern UI Class
+class GameLauncher(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.title(f"Any Aspect Ratio Launcher {tool_version}")
+        self.geometry("900x700")
+        
+        # Enable window resizing
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        customtkinter.set_appearance_mode("system")
+        customtkinter.set_default_color_theme("blue")
+
+        # Create main container
+        self.main_container = customtkinter.CTkFrame(self)
+        self.main_container.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        self.main_container.grid_columnconfigure(0, weight=1)
+        self.main_container.grid_rowconfigure(2, weight=1)  # Make the scrollable frame expand
+
+        # Title
+        self.title_label = customtkinter.CTkLabel(
+            self.main_container,
+            text=f"Any Aspect Ratio Launcher {tool_version}",
+            font=customtkinter.CTkFont(size=24, weight="bold")
+        )
+        self.title_label.grid(row=0, column=0, pady=(0, 20))
+
+        # Search bar
+        self.search_var = customtkinter.StringVar()
+        self.search_var.trace('w', self.filter_games)
+        self.search_entry = customtkinter.CTkEntry(
+            self.main_container,
+            placeholder_text="Search games...",
+            width=300,
+            textvariable=self.search_var
+        )
+        self.search_entry.grid(row=1, column=0, pady=(0, 20))
+
+        # Create scrollable frame for game cards
+        self.scrollable_frame = customtkinter.CTkScrollableFrame(
+            self.main_container,
+            width=700,
+            height=400
+        )
+        self.scrollable_frame.grid(row=2, column=0, sticky="nsew")
+        self.scrollable_frame.grid_columnconfigure(0, weight=1)
+
+        # Grid for game cards
+        self.grid_frame = customtkinter.CTkFrame(self.scrollable_frame, fg_color="transparent")
+        self.grid_frame.grid(row=0, column=0, sticky="nsew")
+        self.grid_frame.grid_columnconfigure((0, 1, 2), weight=1)  # Make columns expand equally
+
+        # Store game cards for filtering
+        self.game_cards = []
+        
+        # Create game cards
+        self.create_game_cards()
+
+        # Open AAR Folder button at bottom
+        self.folder_button = customtkinter.CTkButton(
+            self.main_container,
+            text="Open AAR Folder",
+            command=self.open_aar_folder
+        )
+        self.folder_button.grid(row=3, column=0, pady=(20, 0))
+
+        # Bind window resize event
+        self.bind("<Configure>", self.on_window_resize)
+
+    def create_game_card(self, game_info, row, col):
+        # Create frame for card
+        card = customtkinter.CTkFrame(
+            self.grid_frame,
+            width=150,
+            height=150,
+            fg_color=("gray90", "gray16")
+        )
+        card.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+        card.grid_propagate(False)
+        
+        # Load and resize game image
+        image_path = os.path.join("./images", f"{game_info['1']}.jpg")
+        try:
+            img = Image.open(image_path)
+            img = img.resize((150, 150), Image.Resampling.LANCZOS)
+            photo = ImageTk.PhotoImage(img)
+            
+            # Image label
+            image_label = customtkinter.CTkLabel(
+                card,
+                image=photo,
+                text=""
+            )
+            image_label.image = photo
+            image_label.pack(pady=(10, 5))
+            
+        except FileNotFoundError:
+            # Fallback if image not found
+            image_label = customtkinter.CTkLabel(
+                card,
+                text="No Image",
+                width=150,
+                height=150,
+                fg_color=("gray80", "gray20")
+            )
+            image_label.pack(pady=(10, 5))
+
+        # Game title
+        title_label = customtkinter.CTkLabel(
+            card,
+            text=game_info['2'],
+            font=customtkinter.CTkFont(weight="bold")
+        )
+        title_label.pack(pady=(0, 10))
+
+        # Bind hover events and change cursor
+        card.bind("<Enter>", lambda e: self.on_card_hover(card, title_label, True))
+        card.bind("<Leave>", lambda e: self.on_card_hover(card, title_label, False))
+        card.bind("<Button-1>", lambda e: self.launch_tool(game_info['1']))
+
+        # Make the entire card and its children show pointer cursor
+        for widget in [card, image_label, title_label]:
+            widget.bind("<Enter>", lambda e, w=widget: (self.on_card_hover(card, title_label, True), 
+                                                      self.configure(cursor="hand2")))
+            widget.bind("<Leave>", lambda e, w=widget: (self.on_card_hover(card, title_label, False), 
+                                                      self.configure(cursor="")))
+
+        return {
+            'frame': card,
+            'title': game_info['2'],
+            'shortname': game_info['1'],
+            'row': row,
+            'col': col
+        }
+
+    def create_game_cards(self):
+        cols = 3  # Number of columns in the grid
+        for i, game in enumerate(aar_tools):
+            row = i // cols
+            col = i % cols
+            card_info = self.create_game_card(game, row, col)
+            self.game_cards.append(card_info)
+
+    def on_card_hover(self, card, title_label, entering):
+        if entering:
+            card.configure(fg_color=("gray80", "gray20"))
+            title_label.configure(fg_color=("gray80", "gray20"))
+        else:
+            card.configure(fg_color=("gray90", "gray16"))
+            title_label.configure(fg_color=("gray90", "gray16"))
+
+    def filter_games(self, *args):
+        search_text = self.search_var.get().lower()
+        visible_cards = []
+        
+        # First, remove all cards from grid
+        for card in self.game_cards:
+            card['frame'].grid_remove()
+        
+        # Then, add back only the matching ones in a compact grid
+        for card in self.game_cards:
+            if search_text in card['title'].lower():
+                visible_cards.append(card)
+        
+        # Reposition visible cards in a compact grid
+        cols = 3
+        for i, card in enumerate(visible_cards):
+            row = i // cols
+            col = i % cols
+            card['frame'].grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+
+    def on_window_resize(self, event):
+        # Update the layout when the window is resized
+        width = self.winfo_width()
+        # Adjust number of columns based on window width
+        cols = max(1, width // 250)  # 250 is approximate minimum width for each card
+        
+        # Reconfigure grid columns
+        for i in range(cols):
+            self.grid_frame.grid_columnconfigure(i, weight=1)
+        
+        # Reposition all visible cards
+        visible_cards = [card for card in self.game_cards if card['frame'].winfo_viewable()]
+        for i, card in enumerate(visible_cards):
+            row = i // cols
+            col = i % cols
+            card['frame'].grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+
+    def launch_tool(self, tool_name):
+        update_notification = customtkinter.CTkLabel(
+            self.main_container,
+            text="Fetching contents, please wait..."
+        )
+        update_notification.grid(row=4, column=0, pady=5)
+        
         if check_and_update_version(gui_dirs[tool_name], tool_name):
             newthread(aar_dir, tool_name)
+            
         gui_script = os.path.join(gui_dirs[tool_name], 'GUI.py')
-
-        # Get the path to the current executable (the PyInstaller-built application)
-        current_executable = sys.executable
-
-        # Build the command to execute the other Python script
-        launch_command = [current_executable, gui_script]
-
-        # Launch Using Old Method
         sys.path.append(gui_dirs[tool_name])
-        root.destroy() 
-        # Use subprocess to launch the script
+        self.destroy()
+        
         try:
             import GUI
-            # subprocess.run(launch_command, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
         except subprocess.CalledProcessError as e:
             print(f"Error: {e}")
 
-launch_button.bind("<Button-1>", launch_tool)
+    def open_aar_folder(self):
+        os.startfile(aar_dir)
 
-def open_aar_folder():
-    os.startfile(aar_dir)
-
-open_folder_button = customtkinter.CTkButton(root, text="Open AAR Folder", command=open_aar_folder)
-open_folder_button.pack(pady=20)
-
-# Automatically start the process
-show_update_progress()
-
-root.mainloop()
+if __name__ == "__main__":
+    show_update_progress()
+    # check_and_install_dependencies()
+    app = GameLauncher()
+    app.mainloop()
