@@ -498,8 +498,8 @@ class GameLauncher(customtkinter.CTk):
     def open_aar_folder(self):
         os.startfile(aar_dir)
 
-if __name__ == "__main__":
-    show_update_progress()
-    # check_and_install_dependencies()
-    app = GameLauncher()
-    app.mainloop()
+
+show_update_progress()
+# check_and_install_dependencies()
+app = GameLauncher()
+app.mainloop()
