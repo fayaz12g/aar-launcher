@@ -531,55 +531,35 @@ class GameLauncher(customtkinter.CTk):
 
                     loading_window.update_progress(0.8, "Preparing to launch...")
                     
-                    # Get the path to the GUI script
+                    # Add the tool's directory to Python path
                     gui_dir = gui_dirs[tool_name]
+                    if gui_dir not in sys.path:
+                        sys.path.insert(0, gui_dir)
+                    
+                    # Use after() for delays instead of time.sleep()
+                    self.after(500)
+                    loading_window.update_progress(1.0, "Launch complete!")
+                    self.after(500)
+                    
+                    # Launch the GUI module in a new process
                     gui_script = os.path.join(gui_dir, 'GUI.py')
                     
-                    # Get the correct Python interpreter path
-                    if getattr(sys, 'frozen', False):
-                        # If we're in a PyInstaller bundle
-                        python_path = os.path.join(sys._MEIPASS, 'python.exe') if sys.platform == 'win32' else 'python3'
-                    else:
-                        # If we're running from script
-                        python_path = sys.executable
-
-                    loading_window.update_progress(1.0, "Launch complete!")
+                    # Properly clean up windows
+                    loading_window.destroy()
+                    self.quit()
                     
-                    # Launch the new process with full path specification
-                    try:
-                        if sys.platform == 'win32':
-                            startupinfo = subprocess.STARTUPINFO()
-                            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                            process = subprocess.Popen(
-                                [python_path, gui_script],
-                                startupinfo=startupinfo,
-                                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
-                                env=os.environ.copy(),  # Pass current environment
-                                cwd=gui_dir  # Set working directory to script location
-                            )
-                        else:
-                            process = subprocess.Popen(
-                                [python_path, gui_script],
-                                start_new_session=True,
-                                env=os.environ.copy(),
-                                cwd=gui_dir
-                            )
-                        
-                        # Wait briefly to ensure process started
-                        time.sleep(1)
-                        if process.poll() is None:  # Process is running
-                            loading_window.destroy()
-                            self.destroy()
-                            os._exit(0)
-                        else:
-                            raise Exception("Failed to start process")
-                            
-                    except Exception as launch_error:
-                        print(f"Launch error: {launch_error}")
-                        raise
+                    # Launch new process
+                    if sys.platform == 'win32':
+                        subprocess.Popen([sys.executable, gui_script], 
+                                      creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+                    else:
+                        subprocess.Popen([sys.executable, gui_script], 
+                                      start_new_session=True)
+                    
+                    sys.exit(0)
                     
                 except Exception as e:
-                    self.launching = False
+                    self.launching = False  # Reset flag on error
                     loading_window.status_label.configure(text=f"Error: {str(e)}")
                     loading_window.progressbar.configure(progress_color="red")
                     self.after(2000)
@@ -590,7 +570,7 @@ class GameLauncher(customtkinter.CTk):
             Thread(target=launch_process, daemon=True).start()
             
         except Exception as e:
-            self.launching = False
+            self.launching = False  # Reset flag on error
             print(f"Error creating loading window: {e}")
 
     def open_aar_folder(self):
