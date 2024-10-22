@@ -82,7 +82,7 @@ def show_update_progress():
         os.makedirs(aar_dir)
 
 # Keep your version and directory setup
-tool_version = "8.0"
+tool_version = "8.0.1"
 
 # Platform-specific directory setup
 if sys.platform == 'win32':
