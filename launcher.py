@@ -88,6 +88,7 @@ tool_version = "8.0"
 if sys.platform == 'win32':
     username = os.environ.get('USERNAME')
     aar_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio'
+    images_dir = f'C:\\Users\\{username}\\AppData\\Roaming\\AnyAspectRatio\\perm\\images'
 elif sys.platform == 'darwin':
     username = os.getenv('USER') or os.getenv('LOGNAME')
     aar_dir = f'/Users/{username}/Library/Application Support/AnyAspectRatio'
@@ -99,7 +100,6 @@ else:
 
 # Keep your original tools list
 aar_tools = [
-    {'1': 'home', '2': 'Home Menu'},
     {'1': 'totk', '2': 'Tears of the Kingdom'},
     {'1': 'botw', '2': 'Breath of the Wild'},
     {'1': 'eow', '2': 'Echoes of Wisdom'},
@@ -120,6 +120,7 @@ aar_tools = [
     {'1': 'pmtok', '2': 'Paper Mario: The Origami King'},
     {'1': 'acnh', '2': 'Animal Crossing New Horizons'},
     {'1': 'ctt', '2': 'Captain Toad Treasure Tracker'},
+    {'1': 'home', '2': 'Home Menu'},
 ]
 
 # Setup gui_dirs
@@ -172,6 +173,33 @@ def newthread(aar_dir, tool_name):
     t = Thread(target=update_app_data, args=(gui_dirs[tool_name], aar_dir, tool_name))
     t.start()
 
+
+
+def download_and_extract_images(images_dir):
+    try:
+        # Create images directory if it doesn't exist
+        os.makedirs(images_dir, exist_ok=True)
+        
+        # Download the images.zip file
+        url = 'https://github.com/fayaz12g/aar-files/raw/main/images.zip'
+        response = requests.get(url)
+        
+        # Save the zip file temporarily
+        temp_zip = os.path.join(images_dir, 'temp_images.zip')
+        with open(temp_zip, 'wb') as f:
+            f.write(response.content)
+        
+        # Extract the zip file
+        with ZipFile(temp_zip, 'r') as zip_ref:
+            zip_ref.extractall(images_dir)
+        
+        # Remove the temporary zip file
+        os.remove(temp_zip)
+        return True
+            
+    except Exception as e:
+        print(f"Error downloading images: {e}")
+        return False
 
 class LoadingWindow(customtkinter.CTkToplevel):
     def __init__(self, parent, title="Loading..."):
@@ -289,8 +317,11 @@ class GameLauncher(customtkinter.CTk):
         # Store game cards for filtering
         self.game_cards = []
         
-        # Create game cards
-        self.create_game_cards()
+        # Check for missing images before creating cards
+        self.check_and_download_images()
+
+        # Initialize game cards after everything else
+        self.initialize_game_cards()
 
         # Open AAR Folder button at bottom
         self.folder_button = customtkinter.CTkButton(
@@ -306,6 +337,42 @@ class GameLauncher(customtkinter.CTk):
         # Add a flag to prevent multiple launches
         self.launching = False
 
+
+    def check_and_download_images(self):
+        missing_images = False
+        for game in aar_tools:
+            if game['1'] == 'home':  # Skip checking for home image
+                continue
+            image_path = os.path.join(images_dir, f"{game['1']}.jpg")
+            if not os.path.exists(image_path):
+                missing_images = True
+                break
+        
+        if missing_images:
+            loading_window = LoadingWindow(self, "Downloading Cover Art")
+            
+            def download_process():
+                success = download_and_extract_images(images_dir)
+                
+                def update_ui():
+                    if success:
+                        loading_window.update_progress(1.0, "Cover art download complete!")
+                        self.after(1000, loading_window.destroy)
+                    else:
+                        loading_window.status_label.configure(text="Error downloading cover art")
+                        loading_window.progressbar.configure(progress_color="red")
+                        self.after(2000, loading_window.destroy)
+                
+                self.after(0, update_ui)
+            
+            Thread(target=download_process, daemon=True).start()
+            loading_window.update_progress(0.5, "Downloading and extracting cover art...")
+
+    def initialize_game_cards(self):
+        # Create game cards
+        self.game_cards = []
+        self.create_game_cards()
+
     def create_game_card(self, game_info, row, col):
         # Create frame for card
         card = customtkinter.CTkFrame(
@@ -317,8 +384,8 @@ class GameLauncher(customtkinter.CTk):
         card.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
         card.grid_propagate(False)
         
-        # Load and resize game image
-        image_path = os.path.join("./images", f"{game_info['1']}.jpg")
+        # Load and resize game image using images_dir
+        image_path = os.path.join(images_dir, f"{game_info['1']}.jpg")
         try:
             img = Image.open(image_path)
             img = img.resize((150, 150), Image.Resampling.LANCZOS)
