@@ -546,17 +546,20 @@ class GameLauncher(customtkinter.CTk):
                     
                     # Properly clean up windows
                     loading_window.destroy()
-                    self.quit()
                     
-                    # Launch new process
+                    # Launch new process with modified flags
                     if sys.platform == 'win32':
+                        # Use shell=True for PyInstaller compatibility
                         subprocess.Popen([sys.executable, gui_script], 
-                                      creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+                                    creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+                                    shell=True)
                     else:
                         subprocess.Popen([sys.executable, gui_script], 
-                                      start_new_session=True)
+                                    start_new_session=True)
                     
-                    sys.exit(0)
+                    # Destroy the main window and exit properly
+                    self.destroy()
+                    os._exit(0)  # Force exit to prevent window reopening
                     
                 except Exception as e:
                     self.launching = False  # Reset flag on error
