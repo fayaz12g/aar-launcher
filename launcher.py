@@ -536,30 +536,30 @@ class GameLauncher(customtkinter.CTk):
                     if gui_dir not in sys.path:
                         sys.path.insert(0, gui_dir)
                     
-                    # Use after() for delays instead of time.sleep()
-                    self.after(500)
-                    loading_window.update_progress(1.0, "Launch complete!")
-                    self.after(500)
+                    loading_window.update_progress(0.9, "Launching tool...")
                     
-                    # Launch the GUI module in a new process
-                    gui_script = os.path.join(gui_dir, 'GUI.py')
-                    
-                    # Properly clean up windows
-                    loading_window.destroy()
-                    self.quit()
-                    
-                    # Launch new process
-                    if sys.platform == 'win32':
-                        subprocess.Popen([sys.executable, gui_script], 
-                                      creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
-                    else:
-                        subprocess.Popen([sys.executable, gui_script], 
-                                      start_new_session=True)
-                    
-                    sys.exit(0)
-                    
+                    try:
+                        # Remove any existing GUI module from sys.modules
+                        if 'GUI' in sys.modules:
+                            del sys.modules['GUI']
+                        
+                        # Import and run the GUI module
+                        import GUI
+                        
+                        # Clean up and exit
+                        loading_window.destroy()
+                        self.destroy()
+                        
+                    except ImportError as import_error:
+                        print(f"Import error: {import_error}")
+                        # Print additional debugging information
+                        print(f"Looking for GUI.py in: {gui_dir}")
+                        print(f"Directory contents: {os.listdir(gui_dir)}")
+                        print(f"System path: {sys.path}")
+                        raise
+                        
                 except Exception as e:
-                    self.launching = False  # Reset flag on error
+                    self.launching = False
                     loading_window.status_label.configure(text=f"Error: {str(e)}")
                     loading_window.progressbar.configure(progress_color="red")
                     self.after(2000)
@@ -570,9 +570,9 @@ class GameLauncher(customtkinter.CTk):
             Thread(target=launch_process, daemon=True).start()
             
         except Exception as e:
-            self.launching = False  # Reset flag on error
+            self.launching = False
             print(f"Error creating loading window: {e}")
-
+            
     def open_aar_folder(self):
         os.startfile(aar_dir)
 
