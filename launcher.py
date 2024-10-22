@@ -1,8 +1,9 @@
 import os
-import sys
 import shutil
 import requests
 from zipfile import ZipFile
+import sys
+import subprocess
 from threading import Thread
 import getpass
 import webbrowser
@@ -302,6 +303,9 @@ class GameLauncher(customtkinter.CTk):
         # Bind window resize event
         self.bind("<Configure>", self.on_window_resize)
 
+        # Add a flag to prevent multiple launches
+        self.launching = False
+
     def create_game_card(self, game_info, row, col):
         # Create frame for card
         card = customtkinter.CTkFrame(
@@ -348,17 +352,22 @@ class GameLauncher(customtkinter.CTk):
         )
         title_label.pack(pady=(0, 10))
 
-        # Bind hover events and change cursor
-        card.bind("<Enter>", lambda e: self.on_card_hover(card, title_label, True))
-        card.bind("<Leave>", lambda e: self.on_card_hover(card, title_label, False))
-        card.bind("<Button-1>", lambda e: self.launch_tool(game_info['1']))
+        # Create a single click handler for the card
+        def card_click(event):
+            if not self.launching:  # Check if already launching
+                self.launch_tool(game_info['1'])
 
-        # Make the entire card and its children show pointer cursor
+        # Bind click events to all components
         for widget in [card, image_label, title_label]:
-            widget.bind("<Enter>", lambda e, w=widget: (self.on_card_hover(card, title_label, True), 
-                                                      self.configure(cursor="hand2")))
-            widget.bind("<Leave>", lambda e, w=widget: (self.on_card_hover(card, title_label, False), 
-                                                      self.configure(cursor="")))
+            widget.bind("<Button-1>", card_click)
+            widget.bind("<Enter>", lambda e, w=widget: (
+                self.on_card_hover(card, title_label, True),
+                self.configure(cursor="hand2")
+            ))
+            widget.bind("<Leave>", lambda e, w=widget: (
+                self.on_card_hover(card, title_label, False),
+                self.configure(cursor="")
+            ))
 
         return {
             'frame': card,
@@ -422,49 +431,69 @@ class GameLauncher(customtkinter.CTk):
             card['frame'].grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
     def launch_tool(self, tool_name):
-        # Create loading window
-        loading_window = LoadingWindow(self, "Launching Game...")
-        loading_window.update_progress(0.2, "Checking for updates...")
+        if self.launching:  # Prevent multiple launches
+            return
+            
+        self.launching = True
         
-        def launch_process():
-            try:
-                # Check for updates
-                if check_and_update_version(gui_dirs[tool_name], tool_name):
-                    loading_window.update_progress(0.4, "New version found. Downloading...")
-                    update_app_data(gui_dirs[tool_name], aar_dir, tool_name)
-                    loading_window.update_progress(0.6, "Download complete. Installing...")
-                else:
-                    loading_window.update_progress(0.4, "No updates needed...")
+        try:
+            # Create loading window
+            loading_window = LoadingWindow(self, "Launching Game...")
+            loading_window.update_progress(0.2, "Checking for updates...")
+            
+            def launch_process():
+                try:
+                    # Check for updates
+                    if check_and_update_version(gui_dirs[tool_name], tool_name):
+                        loading_window.update_progress(0.4, "New version found. Downloading...")
+                        update_app_data(gui_dirs[tool_name], aar_dir, tool_name)
+                        loading_window.update_progress(0.6, "Download complete. Installing...")
+                    else:
+                        loading_window.update_progress(0.4, "No updates needed...")
 
-                loading_window.update_progress(0.8, "Preparing to launch...")
-                
-                # Add the tool's directory to Python path
-                gui_dir = gui_dirs[tool_name]
-                if gui_dir not in sys.path:
-                    sys.path.insert(0, gui_dir)
-                
-                # Small delay to ensure UI updates
-                time.sleep(0.5)
-                loading_window.update_progress(1.0, "Launch complete!")
-                time.sleep(0.5)
-                
-                # Close windows and launch tool
-                loading_window.destroy()
-                self.destroy()
-                
-                # Launch the GUI module
-                gui_script = os.path.join(gui_dir, 'GUI.py')
-                subprocess.run([sys.executable, gui_script], check=True)
-                
-            except Exception as e:
-                loading_window.status_label.configure(text=f"Error: {str(e)}")
-                loading_window.progressbar.configure(progress_color="red")
-                time.sleep(2)
-                loading_window.destroy()
-                print(f"Error launching tool: {e}")
+                    loading_window.update_progress(0.8, "Preparing to launch...")
+                    
+                    # Add the tool's directory to Python path
+                    gui_dir = gui_dirs[tool_name]
+                    if gui_dir not in sys.path:
+                        sys.path.insert(0, gui_dir)
+                    
+                    # Use after() for delays instead of time.sleep()
+                    self.after(500)
+                    loading_window.update_progress(1.0, "Launch complete!")
+                    self.after(500)
+                    
+                    # Launch the GUI module in a new process
+                    gui_script = os.path.join(gui_dir, 'GUI.py')
+                    
+                    # Properly clean up windows
+                    loading_window.destroy()
+                    self.quit()
+                    
+                    # Launch new process
+                    if sys.platform == 'win32':
+                        subprocess.Popen([sys.executable, gui_script], 
+                                      creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+                    else:
+                        subprocess.Popen([sys.executable, gui_script], 
+                                      start_new_session=True)
+                    
+                    sys.exit(0)
+                    
+                except Exception as e:
+                    self.launching = False  # Reset flag on error
+                    loading_window.status_label.configure(text=f"Error: {str(e)}")
+                    loading_window.progressbar.configure(progress_color="red")
+                    self.after(2000)
+                    loading_window.destroy()
+                    print(f"Error launching tool: {e}")
 
-        # Run launch process in a separate thread
-        Thread(target=launch_process, daemon=True).start()
+            # Start the launch process
+            Thread(target=launch_process, daemon=True).start()
+            
+        except Exception as e:
+            self.launching = False  # Reset flag on error
+            print(f"Error creating loading window: {e}")
 
     def open_aar_folder(self):
         os.startfile(aar_dir)
