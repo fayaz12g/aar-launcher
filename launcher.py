@@ -17,6 +17,7 @@ import packaging
 import psutil
 from keystone import *
 import pyautogui
+import time
 
 # Keep your original dependencies list
 dependencies = [
@@ -169,6 +170,66 @@ def update_app_data(gui_dir, aar_dir, tool_name):
 def newthread(aar_dir, tool_name):
     t = Thread(target=update_app_data, args=(gui_dirs[tool_name], aar_dir, tool_name))
     t.start()
+
+
+class LoadingWindow(customtkinter.CTkToplevel):
+    def __init__(self, parent, title="Loading..."):
+        super().__init__(parent)
+        self.title(title)
+        
+        # Get parent window size and position
+        parent_x = parent.winfo_x()
+        parent_y = parent.winfo_y()
+        parent_width = parent.winfo_width()
+        parent_height = parent.winfo_height()
+        
+        # Calculate position for center alignment
+        width = 300
+        height = 150
+        x = parent_x + (parent_width - width) // 2
+        y = parent_y + (parent_height - height) // 2
+        
+        self.geometry(f"{width}x{height}+{x}+{y}")
+        self.resizable(False, False)
+        self.transient(parent)
+        self.grab_set()
+        
+        # Configure grid
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        
+        # Create main frame
+        self.frame = customtkinter.CTkFrame(self)
+        self.frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        self.frame.grid_columnconfigure(0, weight=1)
+        
+        # Loading label
+        self.label = customtkinter.CTkLabel(
+            self.frame,
+            text="Loading...",
+            font=customtkinter.CTkFont(size=16, weight="bold")
+        )
+        self.label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        
+        # Progress bar
+        self.progressbar = customtkinter.CTkProgressBar(self.frame)
+        self.progressbar.grid(row=1, column=0, padx=20, pady=(0, 20))
+        self.progressbar.set(0)
+        
+        # Status label
+        self.status_label = customtkinter.CTkLabel(
+            self.frame,
+            text="",
+            font=customtkinter.CTkFont(size=12)
+        )
+        self.status_label.grid(row=2, column=0, padx=20)
+        
+        self.update()
+
+    def update_progress(self, value, status_text):
+        self.progressbar.set(value)
+        self.status_label.configure(text=status_text)
+        self.update()
 
 # New Modern UI Class
 class GameLauncher(customtkinter.CTk):
@@ -361,23 +422,49 @@ class GameLauncher(customtkinter.CTk):
             card['frame'].grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
     def launch_tool(self, tool_name):
-        update_notification = customtkinter.CTkLabel(
-            self.main_container,
-            text="Fetching contents, please wait..."
-        )
-        update_notification.grid(row=4, column=0, pady=5)
+        # Create loading window
+        loading_window = LoadingWindow(self, "Launching Game...")
+        loading_window.update_progress(0.2, "Checking for updates...")
         
-        if check_and_update_version(gui_dirs[tool_name], tool_name):
-            newthread(aar_dir, tool_name)
-            
-        gui_script = os.path.join(gui_dirs[tool_name], 'GUI.py')
-        sys.path.append(gui_dirs[tool_name])
-        self.destroy()
-        
-        try:
-            import GUI
-        except subprocess.CalledProcessError as e:
-            print(f"Error: {e}")
+        def launch_process():
+            try:
+                # Check for updates
+                if check_and_update_version(gui_dirs[tool_name], tool_name):
+                    loading_window.update_progress(0.4, "New version found. Downloading...")
+                    update_app_data(gui_dirs[tool_name], aar_dir, tool_name)
+                    loading_window.update_progress(0.6, "Download complete. Installing...")
+                else:
+                    loading_window.update_progress(0.4, "No updates needed...")
+
+                loading_window.update_progress(0.8, "Preparing to launch...")
+                
+                # Add the tool's directory to Python path
+                gui_dir = gui_dirs[tool_name]
+                if gui_dir not in sys.path:
+                    sys.path.insert(0, gui_dir)
+                
+                # Small delay to ensure UI updates
+                time.sleep(0.5)
+                loading_window.update_progress(1.0, "Launch complete!")
+                time.sleep(0.5)
+                
+                # Close windows and launch tool
+                loading_window.destroy()
+                self.destroy()
+                
+                # Launch the GUI module
+                gui_script = os.path.join(gui_dir, 'GUI.py')
+                subprocess.run([sys.executable, gui_script], check=True)
+                
+            except Exception as e:
+                loading_window.status_label.configure(text=f"Error: {str(e)}")
+                loading_window.progressbar.configure(progress_color="red")
+                time.sleep(2)
+                loading_window.destroy()
+                print(f"Error launching tool: {e}")
+
+        # Run launch process in a separate thread
+        Thread(target=launch_process, daemon=True).start()
 
     def open_aar_folder(self):
         os.startfile(aar_dir)
